@@ -1,0 +1,79 @@
+.ApplicationHome {
+    position: absolute;
+    width: 100%;
+    max-width: 1600px;
+    padding: 30px 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    left: 50%;
+    transform: translateX(-50%);
+    background: url('/image/applicationBackground.png') center center repeat;
+    border-radius: 100px; /* Rounds the corners to give a capsule shape */
+  }
+  
+  .buttoncontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .inputGroup {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .inputGroup input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+  }
+  
+  .checkNowButton {
+    background: #e30564;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .centeredText {
+    font-weight: 700;
+    line-height: 1.2;
+    color: white;
+    padding: 15px 25px;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .checkSeoScore {
+      width: 100%;
+      padding: 10px 20px;
+      border-radius: 30px;
+    }
+  
+    .inputGroup {
+      flex-direction: column;
+      gap: 5px;
+    }
+  
+    .textContainer {
+      margin-bottom: 10px;
+    }
+  
+    .centeredText {
+      font-size: 1.1rem; /* Reduce font size for mobile */
+      padding: 0;
+    }
+  
+    .buttonContainer {
+      text-align: center;
+    }
+  
+    .btn-primary.btn-lg {
+      font-size: 0.9rem; /* Reduce font size for mobile */
+      padding: 8px 12px; /* Reduce padding for mobile */
+    }
+  }

@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'DOHCOOP';
+  src: url('/Font/RSU_Regular.ttf') format('truetype'),
+    url('/Font/RSU_BOLD.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+body,
+label {
+  font-family: 'DOHCOOP' !important;
+}
+
+:root {
+  --ant-typography-font-family: 'DOHCOOP', 'Font Awesome 5 Free', 'Font Awesome 5 Brands';
+}

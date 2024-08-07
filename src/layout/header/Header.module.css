@@ -1,0 +1,105 @@
+/* Default styles for the header */
+.nav-holder {
+  /* Add your default styles */
+}
+
+/* Sticky header */
+.make-sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.is-fixed {
+  /* Add any additional styles for when the header is fixed */
+}
+
+/* Styles for the first column */
+/* styles/Header.module.css */
+.customImgSize {
+  width: 100%;
+  max-width: 246px;
+}
+
+.firstColumn {
+  width: 50.34px;
+  height: 486.34px;
+}
+
+.otherColumn {
+  width: 30px;
+  height: 502px;
+}
+
+.navHolder {
+  transition: all 0.3s ease-in-out;
+}
+
+.makeSticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.isFixed {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+/* Media query for mobile devices */
+@media (max-width: 991px) {
+  .nav-holder {
+    /* Adjust styles for mobile */
+  }
+
+  .navbar-toggler {
+    display: block; /* Ensure toggler button is displayed */
+    margin-left: auto; /* Align to the right */
+  }
+
+  .navbar-brand img {
+    width: 100px; /* Adjust logo size */
+  }
+
+  .navbar-collapse {
+    /* Add mobile specific styles */
+  }
+
+  .dropdown-menu.megamenu {
+    width: 100% !important;
+    padding: 10px;
+  }
+
+  .firstColumn,
+  .otherColumn {
+    width: 100% !important;
+    height: auto;
+  }
+
+  .customImgSize {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* Styles for the SubHeader component */
+.bgPentagon {
+  background: url("/public/image/BackgroundSubHeader.png") center center repeat;
+}
+.text-sm {
+  font-size: 0.875rem;
+}
+@media (max-width: 768px) {
+  .text-sm {
+    font-size: 0.75rem; /* Smaller text size for smaller screens */
+  }
+
+  .h2 {
+    font-size: 1.5rem;
+  }
+
+  .breadcrumb-item a,
+  .breadcrumb-item {
+    font-size: 0.75rem; /* Adjust breadcrumb text size */
+  }
+}
