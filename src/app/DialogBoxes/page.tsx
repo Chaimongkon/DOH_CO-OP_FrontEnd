@@ -97,7 +97,7 @@ const DialogBoxes: React.FC = () => {
       // Assuming the image data is base64 encoded
       const processedData: Notifi[] = data.map((notify: any) => ({
         id: notify.Id,
-        image: base64ToBlobUrl(notify.Image),
+        image: base64ToBlobUrl(notify.Image,"image/webp"),
         url: notify.URLLink,
         status: notify.IsActive,
       }));

@@ -20,12 +20,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/vendor/swiper/swiper-bundle.min.css" />
-        <link rel="stylesheet" href="/vendor/choices.js/public/assets/styles/choices.css" />
+        {/* <link rel="stylesheet" href="/vendor/swiper/swiper-bundle.min.css" /> */}
+        {/* <link rel="stylesheet" href="/vendor/choices.js/public/assets/styles/choices.css" /> */}
         <link rel="stylesheet" href="/css/style.default.css" />
-        <link rel="stylesheet" href="/css/custom.css" />
-        <link rel="stylesheet" href="/js/cc-init.js" />
+        {/* <link rel="stylesheet" href="/css/custom.css" />
+        <link rel="stylesheet" href="/js/cc-init.js" /> */}
         <link
           rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
@@ -34,18 +33,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
         <link
           rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+          href="/css/swiper-bundle.min.css"
         />
       </head>
       <body className={inter.className}>
         <TopHeader />
         <ClientWrapper>{children}</ClientWrapper>
-        <script src="/js/cookieconsent.js" defer></script>
+        {/* <script src="/js/cookieconsent.js" defer></script>
         <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
-        <script src="/vendor/waypoints/lib/noframework.waypoints.js" defer></script>
-        <script src="/vendor/swiper/swiper-bundle.min.js" defer></script>
-        <script src="/vendor/choices.js/public/assets/scripts/choices.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        <script src="/vendor/waypoints/lib/noframework.waypoints.js" defer></script> */}
+        {/* <script src="/vendor/swiper/swiper-bundle.min.js" defer></script> */}
+        {/* <script src="/vendor/choices.js/public/assets/scripts/choices.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> */}
       </body>
     </html>
   );
