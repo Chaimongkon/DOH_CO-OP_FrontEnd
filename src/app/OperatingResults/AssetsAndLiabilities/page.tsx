@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useContext } from "react";
+import { base64ToBlobUrl } from "@/utils/base64ToBlobUrl";
 import { Button, ConfigProvider, Space } from "antd";
 import { AntDesignOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
@@ -135,7 +136,7 @@ const AssetsAndLiabilities = () => {
                 {filteredAssets.map((asset) => (
                   <div className="col-md-3 col-sm-6 text-center" key={asset.Id}>
                     <a
-                      href={`${API}${asset.PdfFile}`}
+                       href={base64ToBlobUrl(asset.PdfFile, 'application/pdf')}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -150,7 +151,7 @@ const AssetsAndLiabilities = () => {
                     <h4 className="text-uppercase mb-3">
                       <a
                         className="text-reset"
-                        href={`${API}${asset.PdfFile}`}
+                        href={base64ToBlobUrl(asset.PdfFile, 'application/pdf')}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

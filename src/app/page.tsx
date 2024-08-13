@@ -1,9 +1,11 @@
 "use client";
 import { Suspense, useEffect, useRef } from "react";
 import SlidesPage from "./Slides/page";
-import { Skeleton } from "antd";
+import { FloatButton, Skeleton } from "antd";
 import DialogBoxes from "./DialogBoxes/page";
 import NewsPage from "./News/page";
+import CookieConsent from "@/components/CookieConsent";
+
 
 export default function Home() {
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -44,6 +46,7 @@ export default function Home() {
 
   return (
     <div>
+      <CookieConsent />
       <Suspense fallback={<Skeleton />}>
         <DialogBoxes />
         <SlidesPage />

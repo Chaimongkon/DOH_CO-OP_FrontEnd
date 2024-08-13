@@ -16,7 +16,7 @@ export async function GET() {
   let db;
   try {
     db = await pool.getConnection();
-    const query = "SELECT Id, Title, Details,Image, File, CreateDate FROM news ORDER BY Id ASC";
+    const query = "SELECT Id, Title, Details,Image, File, CreateDate FROM news ORDER BY Id DESC";
     const [rows]: [NewsRow[], FieldPacket[]] = await db.execute(query);
 
     // Process the rows to convert the Image field to base64 string
