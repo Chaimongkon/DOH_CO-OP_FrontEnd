@@ -47,7 +47,7 @@ export default function Home() {
       <Suspense fallback={<Skeleton />}>
         <DialogBoxes />
         <SlidesPage />
-        {/* <NewsPage /> */}
+        <NewsPage />
       </Suspense>
     </div>
   );

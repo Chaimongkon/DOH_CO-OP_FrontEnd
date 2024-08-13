@@ -16,16 +16,12 @@ import {
 import HomeApplication from "@/layout/application/HomeApplication";
 import { base64ToBlobUrl } from "@/utils/base64ToBlobUrl";
 import "./styles.css";
+import { Slide } from "@/types";
 
-interface Image {
-  id: number;
-  no: number;
-  image: string;
-  url: string;
-}
+
 
 const PageSlide = () => {
-  const [slides, setSlides] = useState<Image[]>([]);
+  const [slides, setSlides] = useState<Slide[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const fetchImages = useCallback(async () => {

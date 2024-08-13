@@ -1,5 +1,5 @@
 // types/index.ts
-export interface Slide {
+  export interface Slide {
     id: number;
     no: number;
     image: string;
@@ -14,4 +14,3 @@ export interface Slide {
     pdffile: string;
     createDate: string;
   }
-  

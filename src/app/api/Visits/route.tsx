@@ -18,22 +18,35 @@ export async function POST(request: NextRequest) {
   }
 
   const now = new Date();
-  const timestamp = now.toISOString();
+  const offset = now.getTimezoneOffset() * 60000; // offset in milliseconds
+  const localTime = new Date(now.getTime() - offset);
+  const timestamp = localTime.toISOString().slice(0, -1); // Remove the 'Z' at the end
+
+  // Log the original timestamp
+  console.log("Original timestamp:", timestamp);
+
   const truncatedTimestamp = truncateMilliseconds(timestamp);
+
+  // Log the truncated timestamp
+  console.log("Truncated timestamp:", truncatedTimestamp);
+
   const day = now.getDate();
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
   const week = getISOWeek(now);
 
+  // Log the date components
+  console.log("Date components - Day:", day, "Month:", month, "Year:", year, "Week:", week);
+
   const query = `
-        INSERT INTO countwebvisits (DateTime, DayCount, WeekCount, MonthCount, YearCount)
-        VALUES (?, 1, 1, 1, 1)
-        ON DUPLICATE KEY UPDATE
-        DayCount = IF(DAY(DateTime) = ?, DayCount + 1, 1),
-        WeekCount = IF(WEEK(DateTime) = ?, WeekCount + 1, 1),
-        MonthCount = IF(MONTH(DateTime) = ?, MonthCount + 1, 1),
-        YearCount = IF(YEAR(DateTime) = ?, YearCount + 1, 1)
-    `;
+    INSERT INTO countwebvisits (DateTimeStamp, DayCount, WeekCount, MonthCount, YearCount)
+    VALUES (?, 1, 1, 1, 1)
+    ON DUPLICATE KEY UPDATE
+    DayCount = IF(DAY(DateTimeStamp) = ?, DayCount + 1, 1),
+    WeekCount = IF(WEEK(DateTimeStamp) = ?, WeekCount + 1, 1),
+    MonthCount = IF(MONTH(DateTimeStamp) = ?, MonthCount + 1, 1),
+    YearCount = IF(YEAR(DateTimeStamp) = ?, YearCount + 1, 1)
+  `;
 
   // Log the query and the parameters
   console.log("Executing query:", query);
@@ -46,7 +59,7 @@ export async function POST(request: NextRequest) {
   ]);
 
   try {
-    const result = await pool.query(query, [
+    const [result] = await pool.execute(query, [
       truncatedTimestamp,
       day,
       week,
