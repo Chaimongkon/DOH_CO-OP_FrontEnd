@@ -3,6 +3,8 @@ import { ReactNode } from 'react';
 import './globals.css';
 import TopHeader from '@/layout/topheader/TopHeader';
 import ClientWrapper from '@/components/ClientWrapper';
+import VisitsCount from '@/components/VisitsCount';
+import Footer from '@/layout/footer/Footer';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -43,7 +45,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body className={inter.className}>
         <TopHeader />
+        <VisitsCount />
         <ClientWrapper>{children}</ClientWrapper>
+        <Footer />
         {/* <script src="/js/cookieconsent.js" defer></script> */}
         <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
         {/* <script src="/vendor/waypoints/lib/noframework.waypoints.js" defer></script> */}

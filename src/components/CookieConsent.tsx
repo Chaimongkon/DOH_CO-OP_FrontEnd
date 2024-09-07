@@ -171,17 +171,17 @@ const CookieConsent = () => {
     <div className={styles.cookieBanner}>
       {consentGiven === null && (
         <>
-          <p>
+          <p >
             เราใช้คุกกี้เพื่อเพิ่มประสบการณ์ที่ดีในการใช้เว็บไซต์
             แสดงเนื้อหาและโฆษณาให้ตรงกับความสนใจ
             รวมถึงเพื่อวิเคราะห์การเข้าใช้งานเว็บไซต์และทำความเข้าใจว่าผู้ใช้งานมาจากที่ใด
           </p>
 
-          <Button type="primary" onClick={handleAccept}>
+          <Button type="primary"  onClick={handleAccept}>
             ยอมรับทั้งหมด
           </Button>
-          <Button onClick={handleDecline}>ไม่ยอมรับทั้งหมด</Button>
-          <Button onClick={CookieSetting}>การตั้งค่าคุกกี้</Button>
+          <Button  onClick={handleDecline}>ไม่ยอมรับทั้งหมด</Button>
+          <Button  onClick={CookieSetting}>การตั้งค่าคุกกี้</Button>
         </>
       )}
       <Modal
@@ -189,11 +189,12 @@ const CookieConsent = () => {
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        style={{fontFamily:'DOHCOOP'}}
         footer={[
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button key="submit" type="primary" style={{fontFamily:'DOHCOOP'}} onClick={handleOk}>
             ยืนยันตัวเลือกของฉัน
           </Button>,
-          <Button key="submit" type="primary" onClick={handleAccept}>
+          <Button key="submit" type="primary" style={{fontFamily:'DOHCOOP'}} onClick={handleAccept}>
           ยอมรับทั้งหมด
         </Button>,
         ]}

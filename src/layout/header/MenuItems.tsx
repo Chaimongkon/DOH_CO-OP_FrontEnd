@@ -40,11 +40,11 @@ const MenuItems: MenuItemType[] = [
             items: [
               {
                 title: "ประวัติสหกรณ์ฯ",
-                href: "/Abont/CoopHistory",
+                href: "/CoopHistory",
               },
               {
                 title: "ค่านิยม วิสัยทัศน์และพันธกิจ",
-                href: "/Abont/Vision",
+                href: "/Vision",
               },
               {
                 title: "จรรยาบรรณคณะกรมมการดำเนินการ",
@@ -237,11 +237,11 @@ const MenuItems: MenuItemType[] = [
             items: [
               {
                 title: "แบบฟอร์มขอรับสวัสดิการ",
-                href: "/FormMemberRelations",
+                href: "/Welfare",
               },
               {
                 title: "แบบฟอร์มสมัครสมาชิก",
-                href: "/Member",
+                href: "/Membership",
               },
               {
                 title: "แบบฟอร์มเงินฝาก-ถอน",
@@ -301,7 +301,7 @@ const MenuItems: MenuItemType[] = [
             items: [
               {
                 title: "รายการย่อแสดงสินทรัพย์และหนี้สิน",
-                href: "/OperatingResults/AssetsAndLiabilities",
+                href: "/AssetsAndLiabilities",
               },             
             ],
           },
@@ -309,7 +309,7 @@ const MenuItems: MenuItemType[] = [
             subheader: "รายงานกิจการประจำปี",
             items: [
               {
-                title: "เอกสารประกอบการประชุมใหญ่ ก",
+                title: "เอกสารประกอบการประชุมใหญ่",
                 href: "/WelfareG",
               },
             ],

@@ -8648,6 +8648,11 @@ textarea.form-control-lg {
   padding-left: 1rem !important;
 }
 
+.px-33 {
+  padding-right: 0.4rem !important;
+  padding-left: 0.8rem !important;
+}
+
 .px-4 {
   padding-right: 1.5rem !important;
   padding-left: 1.5rem !important;

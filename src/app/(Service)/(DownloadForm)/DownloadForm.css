@@ -1,0 +1,18 @@
+  .icon-3d {
+    text-shadow: 1px 1px 2px #000000, 0 0 1em #666666, 0 0 0.2em #666666;
+    transform: perspective(1px) translateZ(0);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .icon-3d:hover {
+    transform: scale(1.1);
+  }
+  .icon-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Adds a shadow effect */
+    transition: text-shadow 0.3s ease-in-out; /* Smooth transition on hover */
+  }
+  
+  .icon-shadow:hover {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7); /* Increases shadow on hover */
+  }
+  

@@ -50,7 +50,7 @@ const HomeApplication = () => {
             }}
           >
               {" "}
-              <Link href="/MobileApp">
+              <Link href="/DownloadApp">
                 <Button
                   style={{
                     fontFamily: "DOHCOOP",

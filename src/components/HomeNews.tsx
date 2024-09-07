@@ -1,11 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { base64ToBlobUrl } from "@/utils/base64ToBlobUrl";
 import { News } from "@/types";
 import Link from "next/link";
 import { RightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import styles from "./HomeNews.module.css";
+
+export const base64ToBlobUrl = (base64: string, contentType: string): string => {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: contentType });
+  return URL.createObjectURL(blob);
+};
 
 const HomeNews = ({ news }: { news: News[] }) => {
   const [blobUrlsImage, setBlobUrlsImage] = useState<string[]>([]);

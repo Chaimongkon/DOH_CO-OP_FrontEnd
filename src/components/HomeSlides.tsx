@@ -2,7 +2,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { base64ToBlobUrl } from "@/utils/base64ToBlobUrl";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/effect-cube";
@@ -24,6 +23,14 @@ interface Slide {
   image: string; // This will be the base64 string initially
   url: string;
 }
+
+export const base64ToBlobUrl = (base64: string, contentType: string): string => {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: contentType });
+  return URL.createObjectURL(blob);
+};
 
 const HomeSlides = ({ slides }: { slides: Slide[] }) => {
   const [blobUrls, setBlobUrls] = useState<string[]>([]);

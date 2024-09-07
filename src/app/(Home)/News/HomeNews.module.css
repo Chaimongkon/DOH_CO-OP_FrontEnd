@@ -1,0 +1,11 @@
+/* HomeNews.module.css */
+.customButton {
+    color: #ff6347; /* Change this to your desired color */
+    font-family: 'DOHCOOP', sans-serif;
+  }
+  
+  .customButton:hover {
+    color: #e55337; /* Change this to your desired hover color */
+    font-family: 'DOHCOOP', sans-serif;
+  }
+  
