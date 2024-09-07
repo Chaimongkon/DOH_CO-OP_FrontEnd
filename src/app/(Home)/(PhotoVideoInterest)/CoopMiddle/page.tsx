@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-import Link from "@mui/joy/Link";
+import LinkMui from "@mui/joy/Link";
 import { Modal, ModalClose, Sheet } from "@mui/joy";
 import InterestPage from "../Interest/page";
 
@@ -26,6 +26,8 @@ function CoopMiddle() {
   const [open, setOpen] = useState(false);
 
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  const PICHER = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
 
   const getYouTubeVideoId = useMemo(
     () => (url: string) => {
@@ -109,7 +111,7 @@ function CoopMiddle() {
                           alt=""
                           style={{
                             width: "358px",
-                            height: "190px",
+                            height: "210px",
                             cursor: "pointer",
                           }}
                           onClick={() => showModal(video)}
@@ -193,7 +195,7 @@ function CoopMiddle() {
                   <div className="col-lg-4 col-md-6" key={covers.Id}>
                     <div className="product h-100">
                       <div className="product-image">
-                        <Link
+                        <LinkMui
                           overlay
                           underline="none"
                           sx={{
@@ -205,10 +207,10 @@ function CoopMiddle() {
                         >
                           <img
                             className="img-fluid"
-                            src={covers.Cover}
+                            src={`${PICHER}${covers.Cover}`}
                             alt="White Blouse Armani"
                           />
-                        </Link>
+                        </LinkMui>
                       </div>
                       <div className="py-4 px-3 text-center">
                         <h3 className="h5 text-uppercase mb-3">

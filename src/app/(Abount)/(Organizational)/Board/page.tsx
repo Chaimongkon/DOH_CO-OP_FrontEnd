@@ -82,7 +82,7 @@ function BoardComponent() {
                       gap: 3,
                     }}
                   >
-                    <Card variant="outlined" sx={{ width: 220 }} key={index}>
+                    <Card variant="outlined" sx={{ width: 220, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)' }} key={index}>
                       <CardOverflow>
                         <AspectRatio ratio="0.9">
                           <img src={p.image} loading="lazy" alt={p.name} />

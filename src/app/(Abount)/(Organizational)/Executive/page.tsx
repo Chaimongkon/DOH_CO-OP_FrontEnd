@@ -7,7 +7,7 @@ import CardOverflow from "@mui/joy/CardOverflow";
 
 import Box from "@mui/material/Box";
 import { useEffect, useState, useCallback } from "react";
-import Typography from "@mui/joy/Typography"; 
+import Typography from "@mui/joy/Typography"; // Ensure you're importing Typography correctly
 
 interface Board {
   id: number;
@@ -25,11 +25,11 @@ const base64ToBlobUrl = (base64: string) => {
     byteNumbers[i] = byteCharacters.charCodeAt(i);
   }
   const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], { type: "image/webp" }); 
+  const blob = new Blob([byteArray], { type: "image/webp" }); // adjust the type if necessary
   return URL.createObjectURL(blob);
 };
 
-function BoardComponent() {
+function ExecutiveComponent() {
   const [organizationals, setOrganizationals] = useState<Board[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -42,7 +42,7 @@ function BoardComponent() {
       const data = await response.json();
 
       const filteredData = data.filter(
-        (board: any) => board.Type === "ผู้ตรวจสอบบัญชีและผู้ตรวจสอบกิจการ"
+        (board: any) => board.Type === "ผู้จัดการใหญ่และรองผู้จัดการฯ"
       );
 
       const processedData = filteredData.map((boards: any) => ({
@@ -82,7 +82,7 @@ function BoardComponent() {
                       gap: 3,
                     }}
                   >
-                    <Card variant="outlined" sx={{ width: 300, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)' }} key={index}>
+                    <Card variant="outlined" sx={{ width: 220, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)' }} key={index}>
                       <CardOverflow>
                         <AspectRatio ratio="0.9">
                           <img src={p.image} loading="lazy" alt={p.name} />
@@ -92,11 +92,10 @@ function BoardComponent() {
                         <Typography
                           sx={{
                             fontFamily: "DOHCOOP",
-                            fontSize: "0.91rem",
+                            fontSize: "1.1rem",
                             fontWeight: "bold",
-                            textAlign: "center", 
+                            textAlign: "center", // Corrected alignment
                           }}
-                          level="title-md"
                         >
                           {p.name}
                         </Typography>
@@ -104,9 +103,8 @@ function BoardComponent() {
                           sx={{
                             fontFamily: "DOHCOOP",
                             fontSize: "1rem",
-                            textAlign: "center", 
+                            textAlign: "center", // Corrected alignment
                           }}
-                          level="body-sm"
                         >
                           {p.position}
                         </Typography>
@@ -143,4 +141,4 @@ function BoardComponent() {
   );
 }
 
-export default BoardComponent;
+export default ExecutiveComponent;

@@ -2,39 +2,22 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import Link from "next/link";
 
-
-
-export default () => {
+export default function SwiperMenu() {
   return (
     <Swiper
-      spaceBetween={50}
-      slidesPerView="auto"
-      onSlideChange={() => {}}
-      onSwiper={(swiper) => {}}
+      spaceBetween={30}
+      breakpoints={{
+        991: {
+          slidesPerView: 6,
+          spaceBetween: 30,
+        },
+        0: {
+          slidesPerView: 1,
+          spaceBetween: 10,
+        },
+      }}
       style={{ marginTop: "50px" }}
     >
-      <SwiperSlide style={{ width: "270px" }}>
-        {" "}
-        <div className="swiper-slide h-auto">
-          <Link href="/Contact">
-            <img
-              className="img-fluid img-grayscale d-block mx-auto"
-              src="image/ImageMenu/Contact.png"
-              alt="..."
-              width={100}
-              height={100}
-              style={{
-                width: "100px",
-                borderRadius: "50%",
-                boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.5)",
-              }}
-            />
-            <p className="lead mb-4" style={{ textAlign: "center" }}>
-              ติดต่อ สอ.ทล.{" "}
-            </p>
-          </Link>
-        </div>
-      </SwiperSlide>
       <SwiperSlide style={{ width: "270px" }}>
         <div className="swiper-slide h-auto">
           <a
@@ -46,8 +29,6 @@ export default () => {
               className="img-fluid img-grayscale d-block mx-auto"
               src="image/ImageMenu/LoginApp.png"
               alt="..."
-              width={100}
-              height={100}
               style={{
                 width: "100px",
                 borderRadius: "50%",
@@ -56,10 +37,11 @@ export default () => {
             />
           </a>
           <p className="lead mb-4" style={{ textAlign: "center" }}>
-            เข้าสู้ระบบสมาชิกออนไลน์
+            เข้าสู่ระบบสมาชิกออนไลน์
           </p>
         </div>
       </SwiperSlide>
+
       <SwiperSlide style={{ width: "270px" }}>
         <div className="swiper-slide h-auto">
           <Link href="/BankAccount">
@@ -67,8 +49,6 @@ export default () => {
               className="img-fluid img-grayscale d-block mx-auto"
               src="image/ImageMenu/bookbankcoop.png"
               alt="..."
-              width={100}
-              height={100}
               style={{ width: "135px" }}
             />
             <p className="lead mb-4" style={{ textAlign: "center" }}>
@@ -77,44 +57,27 @@ export default () => {
           </Link>
         </div>
       </SwiperSlide>
-      <SwiperSlide style={{ width: "270px" }}>
-        <div className="swiper-slide h-auto">
-          <img
-            className="img-fluid img-grayscale d-block mx-auto"
-            src="image/ImageMenu/customer-66.png"
-            alt="..."
-            width={100}
-            height={100}
-            style={{ width: "115px" }}
-          />
-          <p className="lead mb-4" style={{ textAlign: "center" }}>
-            แจ้งการฝาก-ถอน
-          </p>
-        </div>
-      </SwiperSlide>
+
       <SwiperSlide style={{ width: "270px" }}>
         <div className="swiper-slide h-auto">
           <img
             className="img-fluid img-grayscale d-block mx-auto"
             src="image/ImageMenu/QA.png"
             alt="..."
-            width={100}
-            height={100}
             style={{ width: "100px" }}
           />
           <p className="lead mb-4" style={{ textAlign: "center" }}>
-            กระดานถาม ตอบ{" "}
+            กระดานถาม ตอบ
           </p>
         </div>
       </SwiperSlide>
+
       <SwiperSlide style={{ width: "270px" }}>
         <div className="swiper-slide h-auto">
           <img
             className="img-fluid img-grayscale d-block mx-auto"
             src="image/ImageMenu/Report.png"
             alt="..."
-            width={100}
-            height={100}
             style={{
               width: "100px",
               borderRadius: "50%",
@@ -122,10 +85,44 @@ export default () => {
             }}
           />
           <p className="lead mb-4" style={{ textAlign: "center" }}>
-            แจ้งข้อเสนอแนะ ร้องเรียน{" "}
+            แจ้งข้อเสนอแนะ ร้องเรียน
           </p>
+        </div>
+      </SwiperSlide>
+
+      <SwiperSlide style={{ width: "270px" }}>
+        <div className="swiper-slide h-auto">
+          <img
+            className="img-fluid img-grayscale d-block mx-auto"
+            src="image/ImageMenu/customer-66.png"
+            alt="..."
+            style={{ width: "115px" }}
+          />
+          <p className="lead mb-4" style={{ textAlign: "center" }}>
+            แจ้งการฝาก-ถอน
+          </p>
+        </div>
+      </SwiperSlide>
+
+      <SwiperSlide style={{ width: "270px" }}>
+        <div className="swiper-slide h-auto">
+          <Link href="/Contact">
+            <img
+              className="img-fluid img-grayscale d-block mx-auto"
+              src="image/ImageMenu/Contact.png"
+              alt="..."
+              style={{
+                width: "100px",
+                borderRadius: "50%",
+                boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.5)",
+              }}
+            />
+            <p className="lead mb-4" style={{ textAlign: "center" }}>
+              ติดต่อ สอ.ทล.
+            </p>
+          </Link>
         </div>
       </SwiperSlide>
     </Swiper>
   );
-};
+}
