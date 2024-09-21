@@ -1,3 +1,4 @@
+// File: ClientWrapper.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -11,28 +12,24 @@ interface ClientWrapperProps {
 
 const ClientWrapper: React.FC<ClientWrapperProps> = ({ children }) => {
   const [menuName, setMenuName] = useState<string>("");
-  const [isMounted, setIsMounted] = useState<boolean>(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    // Set the initial menuName once the component has mounted
-    if (!isMounted) {
-      const storedMenuName = localStorage.getItem('menuName');
-      if (storedMenuName) {
-        setMenuName(storedMenuName);
-      } else {
-        setMenuName("Home"); // Default menu name
-      }
-      setIsMounted(true);
+    // Set menuName from localStorage on component mount or pathname change
+    const storedMenuName = localStorage.getItem("menuName");
+    if (storedMenuName) {
+      setMenuName(storedMenuName);
+    } else {
+      setMenuName("Home"); // Default menu name if none is found
     }
-  }, [isMounted]);
+  }, [pathname]);
 
+  // Persist menuName to localStorage whenever it changes
   useEffect(() => {
-    // Persist menuName to localStorage whenever it changes
-    if (isMounted && menuName) {
-      localStorage.setItem('menuName', menuName);
+    if (menuName) {
+      localStorage.setItem("menuName", menuName);
     }
-  }, [menuName, isMounted]);
+  }, [menuName]);
 
   // Define the routes where SubHeader should not be shown
   const hideSubHeaderRoutes = ["/"];
@@ -40,7 +37,7 @@ const ClientWrapper: React.FC<ClientWrapperProps> = ({ children }) => {
   return (
     <>
       <Header setMenuName={setMenuName} />
-      {isMounted && !hideSubHeaderRoutes.includes(pathname) && (
+      {!hideSubHeaderRoutes.includes(pathname) && (
         <SubHeader menuName={menuName} />
       )}
       {children}

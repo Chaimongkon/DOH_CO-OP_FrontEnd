@@ -4,6 +4,9 @@ import axios from "axios";
 import LinkMui from "@mui/joy/Link";
 import { Modal, ModalClose, Sheet } from "@mui/joy";
 import InterestPage from "../Interest/page";
+import { useRouter } from "next/navigation";
+import { ClipLoader } from "react-spinners";
+import "../../../styles/LoadingSpinner.css";
 
 interface Photo {
   Id: string;
@@ -19,6 +22,7 @@ interface Video {
 }
 
 function CoopMiddle() {
+  const router = useRouter();
   const [cover, setCover] = useState<Photo[]>([]);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(false);
@@ -73,7 +77,18 @@ function CoopMiddle() {
     setOpen(true);
   };
 
-  if (loading) return <div>Loading...</div>;
+  const handleCardClick = (id: string, title: string) => {
+    localStorage.setItem("menuName", title);
+    router.push(`/ShowAllPhotos/${id}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <ClipLoader color="#007bff" size={80} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -92,7 +107,7 @@ function CoopMiddle() {
 
               <div className="row align-items-stretch">
                 {videos.map((video, index) => (
-                  <div className="col-lg-4 col-md-6" key={video.id}>
+                  <div className="col-lg-4 col-md-6 col-sm-12" key={video.id}>
                     <div className="product h-100">
                       <div
                         className="product-image"
@@ -101,6 +116,7 @@ function CoopMiddle() {
                           display: "flex",
                           alignItems: "center",
                           position: "relative",
+                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)",
                         }}
                       >
                         <img
@@ -110,9 +126,10 @@ function CoopMiddle() {
                           loading="lazy"
                           alt=""
                           style={{
-                            width: "358px",
-                            height: "210px",
+                            width: "100%",
+                            height: "auto", // Maintain aspect ratio
                             cursor: "pointer",
+                            maxWidth: "358px",
                           }}
                           onClick={() => showModal(video)}
                         />
@@ -159,7 +176,8 @@ function CoopMiddle() {
                 <Sheet
                   variant="outlined"
                   sx={{
-                    maxWidth: 800,
+                    maxWidth: "800px",
+                    width: "100%",
                     borderRadius: "md",
                     p: 2,
                     boxShadow: "lg",
@@ -167,16 +185,31 @@ function CoopMiddle() {
                 >
                   <ModalClose variant="plain" sx={{ m: 1 }} />
                   {selectedVideo && (
-                    <iframe
-                      width="600"
-                      height="400"
-                      src={`https://www.youtube.com/embed/${getYouTubeVideoId(
-                        selectedVideo.youTubeUrl
-                      )}`}
-                      title={selectedVideo.title}
-                      frameBorder="0"
-                      allowFullScreen
-                    ></iframe>
+                    <div
+                      style={{
+                        position: "relative",
+                        paddingBottom: "56.25%",
+                        height: 0,
+                        overflow: "hidden",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      <iframe
+                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(
+                          selectedVideo.youTubeUrl
+                        )}`}
+                        title={selectedVideo.title}
+                        frameBorder="0"
+                        allowFullScreen
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      ></iframe>
+                    </div>
                   )}
                 </Sheet>
               </Modal>
@@ -194,10 +227,16 @@ function CoopMiddle() {
                 {cover.map((covers) => (
                   <div className="col-lg-4 col-md-6" key={covers.Id}>
                     <div className="product h-100">
-                      <div className="product-image">
+                      <div
+                        className="product-image"
+                        style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.6)" }}
+                      >
                         <LinkMui
                           overlay
                           underline="none"
+                          onClick={() =>
+                            handleCardClick(covers.Id, covers.Title)
+                          }
                           sx={{
                             color: "#fff",
                             textOverflow: "ellipsis",
@@ -208,7 +247,7 @@ function CoopMiddle() {
                           <img
                             className="img-fluid"
                             src={`${PICHER}${covers.Cover}`}
-                            alt="White Blouse Armani"
+                            alt={covers.Title}
                           />
                         </LinkMui>
                       </div>

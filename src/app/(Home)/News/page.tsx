@@ -6,11 +6,13 @@ import Link from "next/link";
 import { RightOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import styles from "./HomeNews.module.css";
+import { useRouter } from "next/navigation";
 
 const NewsPage = () => {
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const router = useRouter();
 
   const uploadFile = async (base64Data: string, fileName: string) => {
     try {
@@ -30,7 +32,7 @@ const NewsPage = () => {
       }
 
       const result = await response.json();
-      return result.fileUrl; // This should be the publicly accessible URL
+      return result.fileUrl;
     } catch (error) {
       console.error("Error uploading file:", error);
       throw error;
@@ -50,8 +52,8 @@ const NewsPage = () => {
         title: news.Title,
         details: news.Details,
         image: base64ToBlobUrl(news.Image, "image/webp"),
-        file: news.File, // Store the base64 file data
-        pdffile: "", // Initialize with an empty string
+        file: news.File,
+        pdffile: "",
         createDate: news.CreateDate,
       }));
 
@@ -67,7 +69,6 @@ const NewsPage = () => {
 
   const handlePdfClick = async (newsItem: any, index: number) => {
     if (!newsItem.pdffile) {
-      // Show loading spinner for this item
       setLoading((prev) => ({ ...prev, [index]: true }));
 
       try {
@@ -77,17 +78,13 @@ const NewsPage = () => {
             i === index ? { ...item, pdffile: pdfUrl } : item
           )
         );
-
-        // Update href and initiate download
         window.open(pdfUrl, "_blank");
       } catch (error) {
         message.error(`Failed to upload PDF for ${newsItem.title}`);
       } finally {
-        // Remove loading spinner
         setLoading((prev) => ({ ...prev, [index]: false }));
       }
     } else {
-      // If already uploaded, open the URL directly
       window.open(newsItem.pdffile, "_blank");
     }
   };
@@ -99,10 +96,15 @@ const NewsPage = () => {
     }
 
     const day = date.getDate();
-    const month = date.getMonth() + 1; // Months are zero-based in JavaScript
-    const year = date.getFullYear() + 543; // Convert to Buddhist calendar year
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear() + 543;
 
     return `${day}/${month}/${year}`;
+  };
+
+  const handleViewAllClick = () => {
+    localStorage.setItem("menuName", "ข่าวประชาสัมพันธ์");
+    router.push("/NewsAll");
   };
 
   return (
@@ -117,16 +119,15 @@ const NewsPage = () => {
             ข่าวประชาสัมพันธ์
           </h2>
           <div style={{ textAlign: "right", width: "100%" }}>
-            <Link href="/NewsAll">
-              <Button
-                type="link"
-                icon={<RightOutlined />}
-                iconPosition={"end"}
-                className={styles.customButton}
-              >
-                ดูทั้งหมด
-              </Button>
-            </Link>
+            <Button
+              type="link"
+              icon={<RightOutlined />}
+              iconPosition={"end"}
+              className={styles.customButton}
+              onClick={handleViewAllClick}
+            >
+              ดูทั้งหมด
+            </Button>
           </div>
         </header>
 
@@ -159,9 +160,7 @@ const NewsPage = () => {
                   </div>
                   <div className="text-center">
                     <h3 className="h4 text-uppercase text-primary">
-                      <span className="text-reset">
-                        {newsItem.title}
-                      </span>
+                      <span className="text-reset">{newsItem.title}</span>
                     </h3>
                     <p className="bigsmall text-black text-muted">
                       {newsItem.details}

@@ -715,6 +715,10 @@ progress {
   height: auto;
 }
 
+.img-fluid-7 {
+  max-width: 75%;
+  height: auto;
+}
 
 .img-thumbnail {
   padding: 0.25rem;
@@ -14392,6 +14396,9 @@ strong {
 .text-sm3 {
   font-size: 1.3rem !important;
 }
+.text-sm312 {
+  font-size: 1.2rem !important;
+}
 
 .text-sm32 {
   font-size: 1.3rem !important;
@@ -16060,7 +16067,7 @@ a.text-hover-dark:focus, a.text-hover-dark:hover {
 .swiper-button-prev::after {
   font-size: 1.7rem;
   font-weight: bold;
-  color: #4fbfa8;
+  color: #fd7e14;
 }
 .swiper-button-next.swiper-button-disabled,
 .swiper-button-prev.swiper-button-disabled {

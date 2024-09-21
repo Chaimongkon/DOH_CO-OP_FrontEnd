@@ -1,15 +1,30 @@
 @font-face {
   font-family: 'DOHCOOP';
   src: url('/Font/RSU_Regular.ttf') format('truetype'),
-    url('/Font/RSU_BOLD.ttf') format('truetype');
+       url('/Font/RSU_BOLD.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
-body,
-label {
-  font-family: 'DOHCOOP' !important;
+
+@font-face {
+  font-family: 'THSarabun';
+  src: url('/Font/THSarabun.ttf') format('truetype'),
+       url('/Font/THSarabun Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
+/* Apply the font-family globally */
+body,
+label {
+  font-family: 'DOHCOOP', sans-serif !important;
+}
+
+
+:root * {
+  font-family: 'DOHCOOP', 'Font Awesome 5 Free', 'Font Awesome 5 Brands' !important;
+  
+}
 :root {
-  --ant-typography-font-family: 'DOHCOOP', 'Font Awesome 5 Free', 'Font Awesome 5 Brands';
+  --ant-typography-font-family: 'DOHCOOP', 'Font Awesome 5 Free', 'Font Awesome 5 Brands', sans-serif;
 }

@@ -132,15 +132,15 @@ const MenuItems: MenuItemType[] = [
             items: [
               {
                 title: "สมาชิกสามัญประเภท ก",
-                href: "/MemberG",
+                href: "/MemberTypeG",
               },
               {
                 title: "สมาชิกสามัญประเภท ข",
-                href: "/MemberK",
+                href: "/MemberTypeB",
               },
               {
                 title: "สมาชิกสมทบ",
-                href: "/MemberS",
+                href: "/MemberTypeS",
               },
             ],
           },
@@ -149,15 +149,15 @@ const MenuItems: MenuItemType[] = [
             items: [
               {
                 title: "สวัสดิการสมาชิกสามัญประเภท ก",
-                href: "/WelfareG",
+                href: "/WelfareTypeG",
               },
               {
                 title: "สวัสดิการสมาชิกสามัญประเภท ข",
-                href: "/WelfareK",
+                href: "/WelfareTypeB",
               },
               {
                 title: "สวัสดิการสมาชิกสมทบ",
-                href: "/WelfareS",
+                href: "/WelfareTypeS",
               },
             ],
           },
@@ -166,7 +166,7 @@ const MenuItems: MenuItemType[] = [
             items: [
               {
                 title: "บริการทำประกันภัยรถยนต์",
-                href: "/Insurance",
+                href: "/CarInsurance",
               },
               {
                 title: "บริการทำ พรบ. รถยนต์",
@@ -302,7 +302,7 @@ const MenuItems: MenuItemType[] = [
               {
                 title: "รายการย่อแสดงสินทรัพย์และหนี้สิน",
                 href: "/AssetsAndLiabilities",
-              },             
+              },
             ],
           },
           {
@@ -315,7 +315,6 @@ const MenuItems: MenuItemType[] = [
             ],
           },
         ],
-       
       },
     ],
   },
@@ -338,15 +337,15 @@ const MenuItems: MenuItemType[] = [
             items: [
               {
                 title: "ข้อบังคับ",
-                href: "/Abont/CoopHistory",
+                href: "/Statute",
               },
               {
                 title: "ระเบียบ",
-                href: "/Abont/Vision",
+                href: "/Regularity",
               },
               {
                 title: "ประกาศ",
-                href: "/BoardEthics",
+                href: "/Declare",
               },
             ],
           },
@@ -360,7 +359,6 @@ const MenuItems: MenuItemType[] = [
     href: "/Contact",
     dropdown: false,
   },
-
 ];
 
 export default MenuItems;

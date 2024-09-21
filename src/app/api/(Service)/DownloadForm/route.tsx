@@ -16,7 +16,7 @@ export async function GET() {
   let db;
   try {
     db = await pool.getConnection();
-    const query = "SELECT Id, Title,TypeForm, TypeMember, PdfFile FROM formdowsloads ORDER BY TypeForm DESC";
+    const query = "SELECT Id, Title,TypeForm, TypeMember, PdfFile FROM formdowsloads ORDER BY TypeForm ASC";
     const [rows]: [FormDownloadRow[], FieldPacket[]] = await db.execute(query);
 
     // Process the rows to convert the Image field to base64 string

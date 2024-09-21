@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import pool from "../../db/mysql"; // Adjust the import path as per your project structure
+import { format } from 'date-fns';
 
 export async function POST(request: NextRequest) {
   // Declare variables outside the try block so they are accessible in the catch block
@@ -26,13 +27,13 @@ export async function POST(request: NextRequest) {
     if (!userId || !consentStatus || !cookieCategories || !ipAddress || !consentDate || !userAgent) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
-
+    const formattedConsentDate = format(new Date(consentDate), 'yyyy-MM-dd HH:mm:ss');
     // Insert the consent data into the database
     const query = `
       INSERT INTO cookieconsents (UserId, ConsentStatus, ConsentDate, CookieCategories, IpAddress, UserAgent)
       VALUES (?, ?, ?, ?, ?, ?)
     `;
-    const values = [userId, consentStatus, consentDate, cookieCategories, ipAddress, userAgent];
+    const values = [userId, consentStatus, formattedConsentDate, cookieCategories, ipAddress, userAgent];
     await pool.query(query, values);
 
     // Return a successful response

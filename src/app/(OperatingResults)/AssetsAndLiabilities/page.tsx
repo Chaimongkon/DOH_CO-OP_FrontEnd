@@ -49,7 +49,7 @@ const AssetsAndLiabilities = () => {
 
   const fetchAllYears = useCallback(async () => {
     try {
-      const res = await fetch(`${API}AssetsLiabilities`);
+      const res = await fetch(`${API}/AssetsLiabilities`);
       const data = await res.json();
       setAllYear(data.data);
       if (data.data.length > 0) {
@@ -63,7 +63,7 @@ const AssetsAndLiabilities = () => {
   const fetchAssetsForYear = useCallback(
     async (selectedYear: string) => {
       try {
-        const res = await fetch(`${API}AssetsLiabilities?year=${selectedYear}`);
+        const res = await fetch(`${API}/AssetsLiabilities?year=${selectedYear}`);
         const data = await res.json();
         setAssets(data.data);
       } catch (error) {
