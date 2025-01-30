@@ -1,0 +1,77 @@
+/* globals.css */
+.happy-new-year .bg-cover {
+  background-size: cover !important;
+  background: transparent !important;
+}
+
+.happy-new-year .primary-overlay::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: " ";
+  opacity: 0.4;
+  background: #ffffff14;
+  transition: all 0.3s;
+}
+
+.happy-new-year .text-muted-new {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.happy-new-year h2, .happy-new-year .h2,
+.happy-new-year h3, .happy-new-year .h3
+.happy-new-year h4, .happy-new-year .h4,
+.happy-new-year h5, .happy-new-year .h5,
+.happy-new-year .lead {
+  color: #f8f9fa;
+}
+
+.happy-new-year h2, .happy-new-year .h2 {
+  font-size: calc(1.305rem + 0.66vw);
+}
+
+.happy-new-year h3, .happy-new-year .h3 {
+  font-size: calc(1.275rem + 0.3vw);
+}
+@media (min-width: 1200px) {
+  .happy-new-year h3, .happy-new-year .h3 {
+    font-size: 1.5rem;
+  }
+}
+
+.happy-new-year h4, .happy-new-year .h4 {
+  font-size: 1.1rem;
+}
+
+.happy-new-year h5, .happy-new-year .h5 {
+  font-size: 1rem;
+}
+
+.happy-new-year .lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+.happy-new-year .table > :not(caption) > * > * {
+  background-color: #ffffff87;
+}
+
+.happy-new-year .bg-light {
+  background-color: rgb(248 249 250 / 55%) !important;
+}
+
+.happy-new-year .bg-white {
+  --bs-bg-opacity: 1;
+  background-color: rgb(255 255 255 / 80%) !important
+}
+
+.happy-new-year .bg-gray-700 {
+  background: #54545421 !important;
+}
+
+.happy-new-year .bg-dark {
+  --bs-bg-opacity: 1;
+  background-color: rgb(65 65 65 / 54%) !important
+}

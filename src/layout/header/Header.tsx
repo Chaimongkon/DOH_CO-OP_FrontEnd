@@ -1,7 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import MenuItems, { MenuItemType, SectionType, ColumnType } from "./MenuItems";
+import useMenuItems, {
+  MenuItemType,
+  SectionType,
+  ColumnType,
+} from "./MenuItems";
 import MenuItem from "./MenuItem";
 import styles from "./Header.module.css"; // Import the CSS module
 
@@ -11,6 +15,7 @@ interface HeaderProps {
 
 function Header({ setMenuName }: HeaderProps) {
   const [isSticky, setSticky] = useState(false);
+  const menuItems = useMenuItems(); // Call the hook to get the menu items
 
   const handleScroll = () => {
     const scrolled = window.scrollY > 0;
@@ -35,6 +40,7 @@ function Header({ setMenuName }: HeaderProps) {
         className={`${styles.navHolder} ${
           isSticky ? `${styles.makeSticky} ${styles.isFixed}` : ""
         }`}
+        style={{ position: "relative", zIndex: 100 }}
       >
         <div
           className="navbar navbar-light bg-white navbar-expand-lg py-0"
@@ -42,7 +48,10 @@ function Header({ setMenuName }: HeaderProps) {
         >
           <div className="container py-3 py-lg-0 px-lg-0">
             <Link href="/" legacyBehavior>
-              <a className="navbar-brand" onClick={() => handleMenuClick("Home")}>
+              <a
+                className="navbar-brand"
+                onClick={() => handleMenuClick("Home")}
+              >
                 <img
                   className="d-none d-md-inline-block"
                   src="/image/logo.png"
@@ -69,7 +78,7 @@ function Header({ setMenuName }: HeaderProps) {
             </button>
             <div className="collapse navbar-collapse" id="navigationCollapse">
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                {MenuItems.map((item: MenuItemType, index: number) =>
+                {menuItems.map((item: MenuItemType, index: number) =>
                   item.navlabel ? (
                     <li key={index} className="nav-item nav-label">
                       <span className="nav-link-sub py-2 text-uppercase">

@@ -1,14 +1,17 @@
 import { NextResponse, NextRequest } from "next/server";
-import pool from "../../db/mysql";
+import pool from "../../db/mysql"; // Assuming you have a pool connection setup
+import redis from "../../db/redis"; // Assuming Redis connection is set up correctly
 import { RowDataPacket, FieldPacket } from "mysql2";
+import path from "path";
 
-// Define the types for the query results
+export const dynamic = 'force-dynamic';
+
 interface NewsRow extends RowDataPacket {
   Id: number;
   Title: string;
   Details: string;
-  Image: Buffer | null;
-  File: Buffer | null;
+  ImagePath: string;
+  PdfPath: string;
   CreateDate: string;
 }
 
@@ -18,6 +21,7 @@ interface CountRow extends RowDataPacket {
 
 export async function GET(req: NextRequest) {
   const db = await pool.getConnection();
+
   try {
     // Parse query parameters
     const page = parseInt(req.nextUrl.searchParams.get('page') || '1', 10);
@@ -28,14 +32,14 @@ export async function GET(req: NextRequest) {
     const params: (string | number)[] = [];
 
     let query = `
-      SELECT SQL_CALC_FOUND_ROWS Id, Title, Details, Image, File, CreateDate
+      SELECT SQL_CALC_FOUND_ROWS Id, Title, Details, ImagePath, PdfPath, CreateDate
       FROM news
     `;
 
     // Add search filter if present
     if (search) {
       query += " WHERE Title LIKE ?";
-      params.push('%' + search + '%');
+      params.push(`%${search}%`);
     }
 
     // Add ordering and pagination with string interpolation for LIMIT
@@ -50,20 +54,27 @@ export async function GET(req: NextRequest) {
     const pageCount = Math.ceil(total / per_page);
 
     // Process the rows to convert the Image and File fields to base64 strings
-    const processedRows = rows.map((row) => ({
+    const processedRows = rows.map((row: NewsRow) => ({
       ...row,
-      Image: row.Image ? row.Image.toString("base64") : null,
-      File: row.File ? row.File.toString("base64") : null,
+      ImagePath: row.ImagePath
+        ? `/News/File/Image/${path.basename(row.ImagePath)}`
+        : null, // Handle null or undefined ImagePath
+      PdfPath: row.PdfPath
+        ? `/News/File/Pdf/${path.basename(row.PdfPath)}`
+        : null, // Handle null or undefined PdfPath
     }));
-
-    // Return the result
-    return NextResponse.json({
+    // Prepare the response data
+    const responseData = {
       page,
       per_page,
       total,
       pageCount,
       data: processedRows,
-    }, { status: 200 });
+    };
+
+    // Return the response data
+    return NextResponse.json(responseData, { status: 200 });
+
   } catch (error: any) {
     // Log the error for debugging
     console.error("Error fetching data:", error.message);
@@ -75,6 +86,3 @@ export async function GET(req: NextRequest) {
     if (db) db.release();
   }
 }
-
-// Make sure this API route is not statically rendered
-export const dynamic = 'force-dynamic';

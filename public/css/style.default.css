@@ -244,7 +244,7 @@ h2, .h2 {
 }
 @media (min-width: 1200px) {
   h2, .h2 {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
 }
 
@@ -14238,7 +14238,7 @@ strong {
   .menu-large .megamenu {
     width: 100%;
     max-width: 1320px;
-    left: 50%;
+    left: 60%;
     transform: translateX(-50%);
     margin-top: -1px;
   }

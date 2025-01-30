@@ -15,23 +15,13 @@ interface Board {
   position: string;
   priority: string;
   type: string;
-  image: string;
+  imagePath: string;
 }
 
-const base64ToBlobUrl = (base64: string) => {
-  const byteCharacters = atob(base64);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], { type: "image/webp" }); // adjust the type if necessary
-  return URL.createObjectURL(blob);
-};
-
-function Credit() {
+function General() {
   const [organizationals, setOrganizationals] = useState<Board[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
 
   const fetchOrganizational = useCallback(async () => {
     try {
@@ -45,13 +35,15 @@ function Credit() {
         (board: any) => board.Type === "ฝ่ายบริหารทั่วไป"
       );
 
-      const processedData = filteredData.map((boards: any) => ({
-        id: boards.Id,
-        name: boards.Name,
-        position: boards.Position,
-        priority: boards.Priority,
-        type: boards.Type,
-        image: base64ToBlobUrl(boards.Image),
+      const processedData = filteredData.map((general: any) => ({
+        id: general.Id,
+        name: general.Name,
+        position: general.Position,
+        priority: general.Priority,
+        type: general.Type,
+        imagePath: general.ImagePath
+          ? `${URLFile}${general.ImagePath}`
+          : "",
       }));
 
       setOrganizationals(processedData);
@@ -85,14 +77,14 @@ function Credit() {
                     <Card variant="outlined" sx={{ width: 220, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)' }} key={index}>
                       <CardOverflow>
                         <AspectRatio ratio="0.9">
-                          <img src={p.image} loading="lazy" alt={p.name} />
+                          <img src={p.imagePath} loading="lazy" alt={p.name} />
                         </AspectRatio>
                       </CardOverflow>
                       <CardContent>
                         <Typography
                           sx={{
                             fontFamily: "DOHCOOP",
-                            fontSize: "1.1rem",
+                            fontSize: "1rem",
                             fontWeight: "bold",
                             textAlign: "center", // Corrected alignment
                           }}
@@ -102,7 +94,7 @@ function Credit() {
                         <Typography
                           sx={{
                             fontFamily: "DOHCOOP",
-                            fontSize: "1rem",
+                            fontSize: "0.921rem",
                             textAlign: "center", // Corrected alignment
                           }}
                         >
@@ -141,4 +133,4 @@ function Credit() {
   );
 }
 
-export default Credit;
+export default General;

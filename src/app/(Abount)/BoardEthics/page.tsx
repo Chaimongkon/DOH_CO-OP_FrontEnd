@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { base64ToBlobUrl } from "@/utils/base64ToBlobUrl";
-
 interface Society {
   id: number;
-  image: string;
+  imagePath: string;
   societyType: string;
   status: boolean;
 }
@@ -13,6 +11,7 @@ interface Society {
 const BoardEthics = () => {
   const [society, setSociety] = useState<Society[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
 
   const fetchImages = useCallback(async () => {
     try {
@@ -24,14 +23,11 @@ const BoardEthics = () => {
       const processedData: Society[] = data
         .map((society: any) => ({
           id: society.Id,
-          image: base64ToBlobUrl(society.Image, "image/webp"),
+          imagePath: society.ImagePath ? `${URLFile}${society.ImagePath}` : "",
           societyType: society.SocietyType,
           status: society.IsActive,
         }))
-        .filter(
-          (society: Society) =>
-            society.societyType === "จรรยาบรรณสำหรับคณะกรมมการดำเนินการ"
-        );
+        .filter((society: Society) => society.societyType === "จรรยาบรรณสำหรับคณะกรมมการดำเนินการ");
 
       setSociety(processedData);
     } catch (error) {
@@ -54,7 +50,7 @@ const BoardEthics = () => {
               </h2>
             </header>
             <center>
-              <img className="img-fluid" src={s.image} alt="" />
+              <img className="img-fluid" src={s.imagePath} alt="" />
             </center>
           </div>
         ))}

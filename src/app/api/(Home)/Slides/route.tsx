@@ -1,33 +1,46 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import pool from "../../db/mysql";
+import redis from "../../db/redis"; // Assuming Redis connection is set up correctly
 import { RowDataPacket, FieldPacket } from "mysql2";
+import path from "path";
+
+export const dynamic = "force-dynamic";
 
 // Define the types for the query results
 interface SlideRow extends RowDataPacket {
   Id: number;
   No: number;
-  Image: Buffer;
+  ImagePath: string;
   URLLink: string;
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   let db;
+
   try {
     db = await pool.getConnection();
-    const query = "SELECT Id, No, Image, URLLink FROM slides ORDER BY No ASC";
-    const [rows]: [SlideRow[], FieldPacket[]] = await db.execute(query);
 
-    // Process the rows to convert the Image field to base64 string
-    const processedRows = rows.map((row) => ({
+    const query = `SELECT Id, No, ImagePath, URLLink FROM slides ORDER BY No ASC`;
+
+    const [rows]: [SlideRow[], FieldPacket[]] = await db.query(query);
+
+    // Check for null or undefined values in ImagePath and PdfPath and handle them
+    const processedRows = rows.map((row: SlideRow) => ({
       ...row,
-      Image: row.Image ? Buffer.from(row.Image).toString('base64') : null,
+      ImagePath: row.ImagePath
+        ?`/Slides/File/${path.basename(row.ImagePath)}`
+        : null,
     }));
 
     return NextResponse.json(processedRows, { status: 200 });
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   } finally {
     if (db) db.release();
   }
 }
+

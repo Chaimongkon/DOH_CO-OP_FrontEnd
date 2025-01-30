@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import pool from "../../db/mysql";
 import { RowDataPacket, FieldPacket } from "mysql2";
 
+export const dynamic = "force-dynamic";
 // Define the types for the query results
 interface NewsRow extends RowDataPacket {
   Year: string;

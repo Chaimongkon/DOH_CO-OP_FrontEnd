@@ -1,0 +1,54 @@
+.box-image-text {
+    position: relative;
+    width: 320px;
+    height: 450px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    box-shadow: 0px 20px 20px 5px rgba(0, 0, 0, 0.5);
+    transform: perspective(600px) rotateY(10deg); /* เพิ่มมุมมองสามมิติ */
+    transition: transform 0.3s ease-in-out;
+    overflow: hidden;
+  }
+  
+  /* สร้างสันหนังสือด้านซ้าย */
+  .box-image-text::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -20px;
+    width: 30px;
+    height: 100%;
+    background-color: #d3c4a6; /* สีของสันหนังสือ */
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.3); /* เงาของสันหนังสือ */
+    transform: rotateY(-30deg); /* มุมหมุนให้เหมือนสันนูน */
+    z-index: -1;
+  }
+  
+  /* สร้างหน้าในหนังสือด้วยเส้นเล็ก ๆ */
+  .box-image-text::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 30px);
+    height: calc(100% - 20px);
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.6) 10%,
+      rgba(240, 240, 240, 0.9) 11%,
+      rgba(255, 255, 255, 0.6) 12%
+    );
+    background-size: 5px 100%;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2); /* เงาด้านในเพื่อความลึก */
+    border-radius: 8px;
+    z-index: 1;
+  }
+  
+  /* สไตล์ภาพในหน้าปกหนังสือ */
+  .img-fluid {
+    height: 100%;
+    width: 100%;
+    object-fit: cover; /* ให้ภาพเต็มกรอบโดยไม่เสียอัตราส่วน */
+    border-radius: 10px; /* ขอบมุมมน */
+  }
+  

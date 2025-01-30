@@ -1,6 +1,9 @@
+//api/PhotoAll/[id]/route.tsx
 import { NextResponse } from "next/server";
 import pool from "../../../db/mysql";
 import { RowDataPacket } from "mysql2";
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: Request,
@@ -13,12 +16,18 @@ export async function GET(
       [params.id]
     );
     connection.release();
-    const title = rows[0].Title;
+
     if (rows.length > 0) {
+      const title = rows[0].Title;
       try {
         const images = JSON.parse(rows[0].Image);
 
-        return NextResponse.json({ images, title }, { status: 200 });
+        // Process each image to replace '/Uploads/PhotoAlbum/' with '/PhotoAll/File/'
+        const processedImages = images.map((image: string) =>
+          image.replace('/Uploads/PhotoAlbum/', '/PhotoAll/File/')
+        );
+
+        return NextResponse.json({ images: processedImages, title }, { status: 200 });
       } catch (jsonError) {
         console.error("JSON Parsing Error:", jsonError);
         return NextResponse.json(

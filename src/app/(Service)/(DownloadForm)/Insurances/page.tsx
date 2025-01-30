@@ -1,7 +1,9 @@
 "use client";
 import React, { useCallback, useEffect, useState, memo, useMemo } from "react";
 import { DownloadForm } from "@/types";
-import { Button, message } from "antd";
+import { message } from "antd";
+import Lottie from "react-lottie"; // นำเข้า Lottie
+import animationData from "../../../File.json"; // นำเข้าไฟล์ Lottie ของคุณ
 import "../DownloadForm.css";
 
 const apiRequest = async (url: string, method: string = "GET", body?: any) => {
@@ -23,26 +25,23 @@ const apiRequest = async (url: string, method: string = "GET", body?: any) => {
 
 const Insurances: React.FC = memo(() => {
   const [forms, setForms] = useState<DownloadForm[]>([]);
-  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [loading, setLoading] = useState(false);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
 
-  const uploadFile = useCallback(
-    async (base64Data: string, fileName: string) => {
-      try {
-        const result = await apiRequest(`${API}/Upload`, "POST", {
-          fileName,
-          fileData: base64Data,
-        });
-        return result.fileUrl;
-      } catch (error) {
-        console.error("Error uploading file:", error);
-        throw error;
-      }
+  // Lottie options
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
     },
-    [API]
-  );
+  };
 
+  // Fetch download form data
   const fetchDownloadForm = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await apiRequest(`${API}/DownloadForm`);
       const processedData = data
@@ -52,96 +51,101 @@ const Insurances: React.FC = memo(() => {
           title: form.Title,
           typeForm: form.TypeForm,
           typeMember: form.TypeMember,
-          File: form.File, // Ensure you're using the correct property name
-          pdffile: "",
+          filePath: form.FilePath ? `${URLFile}${form.FilePath}` : "",
+          pdffile: form.FilePath || "",
           createDate: form.CreateDate,
         }));
-
       setForms(processedData);
     } catch (error) {
       console.error("Failed to fetch forms:", error);
+      message.error("Failed to fetch download forms");
+    } finally {
+      setLoading(false);
     }
-  }, [API]);
+  }, [API, URLFile]);
 
   useEffect(() => {
     fetchDownloadForm();
   }, [fetchDownloadForm]);
 
-  const handlePdfClick = useCallback(
-    async (formItem: DownloadForm, index: number) => {
-      if (!formItem.pdffile) {
-        setLoading((prev) => ({ ...prev, [index]: true }));
+  // Handle the PDF click
+  const handlePdfClick = useCallback((formItem: DownloadForm) => {
+    if (formItem.pdffile) {
+      window.open(formItem.pdffile, "_blank");
+    } else {
+      message.error(`ไม่มีไฟล์ ${formItem.title}`);
+    }
+  }, []);
 
-        try {
-          const pdfUrl = await uploadFile(
-            formItem.File,
-            `${formItem.title}.pdf`
-          ); 
-          setForms((prevForms) =>
-            prevForms.map((item, i) =>
-              i === index ? { ...item, pdffile: pdfUrl } : item
-            )
-          );
-
-          window.open(pdfUrl, "_blank");
-        } catch (error) {
-          message.error(`Failed to upload PDF for ${formItem.title}`);
-        } finally {
-          setLoading((prev) => ({ ...prev, [index]: false }));
-        }
-      } else {
-        window.open(formItem.pdffile, "_blank");
-      }
-    },
-    [uploadFile]
-  );
-
+  // Group forms by member type
   const groupedForms = useMemo(() => {
-    return forms.reduce((groups, form) => {
+    const validMembers = [
+      "สมาชิกสามัญประเภท ก",
+      "สมาชิกสามัญประเภท ข",
+      "สมาชิกสมทบ",
+      "สมาชิกประเภท ก ข สมทบ",
+    ];
+    const grouped = forms.reduce((groups, form) => {
       const { typeMember } = form;
-      if (!groups[typeMember]) {
-        groups[typeMember] = [];
+      if (validMembers.includes(typeMember)) {
+        if (!groups[typeMember]) {
+          groups[typeMember] = [];
+        }
+        groups[typeMember].push(form);
       }
-      groups[typeMember].push(form);
       return groups;
     }, {} as { [key: string]: DownloadForm[] });
-  }, [forms]);
 
-  const columns = Object.entries(groupedForms);
+    return Object.keys(grouped)
+      .sort((a, b) => validMembers.indexOf(a) - validMembers.indexOf(b))
+      .reduce((acc, key) => {
+        acc[key] = grouped[key];
+        return acc;
+      }, {} as { [key: string]: DownloadForm[] });
+  }, [forms]);
 
   return (
     <section className="py-5">
       <div className="container py-4">
-        <div className="row gy-4">
-          {columns.map(([typeMember, memberForms], columnIndex) => (
-            <div className="col-lg-4" key={columnIndex}>
-              <h3 className="text-uppercase lined mb-4">{typeMember}</h3>
-              {memberForms.map((formItem: DownloadForm, index: number) => (
-                <ul className="list-unstyled" key={formItem.id}>
-                  <li className="d-flex mb-32">
-                    <div
-                      className="icon-filled2 me-2"
-                      style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)" }}
-                    >
-                      <i
-                        className="fas fa-download icon-shadow icon-3d"
-                        onClick={() => handlePdfClick(formItem, index)}
-                      ></i>
-                    </div>
-                    <a
-                      onClick={() => handlePdfClick(formItem, index)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="cursor-pointer"
-                    >
-                      <p className="text-sm312 mb-0">{formItem.title}</p>
-                    </a>
-                  </li>
-                </ul>
-              ))}
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="loading-container">
+            <Lottie options={defaultOptions} height={150} width={150} />{" "}
+            {/* ใช้ Lottie แสดงสถานะการโหลด */}
+          </div>
+        ) : (
+          <div className="row gy-4">
+            {Object.entries(groupedForms).map(
+              ([typeMember, memberForms], columnIndex) => (
+                <div className="col-lg-4" key={columnIndex}>
+                  <h3 className="text-uppercase lined mb-4">{typeMember}</h3>
+                  <ul className="list-unstyled">
+                    {memberForms.map((formItem: DownloadForm) => (
+                      <li className="d-flex mb-32" key={formItem.id}>
+                        <div
+                          className="icon-filled2 me-2"
+                          style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)" }}
+                        >
+                          <i
+                            className="fas fa-download icon-shadow icon-3d"
+                            onClick={() => handlePdfClick(formItem)}
+                          ></i>
+                        </div>
+                        <a
+                          onClick={() => handlePdfClick(formItem)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="cursor-pointer"
+                        >
+                          <p className="text-sm312 mb-0">{formItem.title}</p>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

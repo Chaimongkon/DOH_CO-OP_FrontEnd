@@ -57,7 +57,7 @@ const InterestPage: React.FC = () => {
     <>
       <div className="col-lg-41">
         <div className="row gy-5 align-items-stretch">
-          <div className="bg-light py-4 px-33">
+          <div className="bg-light py-4 px-33" style={{ position: "relative" }}>
             <div
               style={{
                 display: "flex",
@@ -65,7 +65,7 @@ const InterestPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <h4>อัตราดอกเบี้ยเงินฝาก</h4>
+              <h4 className="text-black">อัตราดอกเบี้ยเงินฝาก</h4>
             </div>
             <div
               style={{
@@ -74,7 +74,7 @@ const InterestPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <h4>
+              <h4 className="text-black">
                 เริ่ม&nbsp;
                 {interestData.length > 0
                   ? formatDate(interestData[0].InterestDate)
@@ -85,18 +85,18 @@ const InterestPage: React.FC = () => {
               <table className="table mb-0">
                 <tbody className="text-sm">
                   <tr>
-                    <th>
+                    <th style={{ position: "relative" }}>
                       {" "}
                       <span className="d-block py-1 fw-normal">
                         <b>
-                          <h5>ประเภทเงินฝาก</h5>
+                          <h5 className="text-black">ประเภทเงินฝาก</h5>
                         </b>
                       </span>
                     </th>
-                    <th>
+                    <th style={{ position: "relative" }}>
                       <span className="d-block py-1 fw-normal text-end">
                         <b>
-                          <h5>ดอกเบี้ย</h5>
+                          <h5 className="text-black">ดอกเบี้ย</h5>
                         </b>
                       </span>
                     </th>
@@ -116,7 +116,7 @@ const InterestPage: React.FC = () => {
                         <tr key={i}>
                           <th
                             className="text-muted"
-                            style={{ fontSize: "17px" }}
+                            style={{ fontSize: "17px", position: "relative" }}
                           >
                             {" "}
                             <span className="d-block py-1 fw-normal">
@@ -137,7 +137,7 @@ const InterestPage: React.FC = () => {
                               )}
                             </span>
                           </th>
-                          <th>
+                          <th style={{ position: "relative" }}>
                             {" "}
                             <span
                               className="d-block py-1 fw-normal text-end"
@@ -157,7 +157,10 @@ const InterestPage: React.FC = () => {
           </div>
         </div>
         <div className="row gy-5 align-items-stretch">
-          <div className="bg-light py-44 px-33">
+          <div
+            className="bg-light py-44 px-33"
+            style={{ position: "relative" }}
+          >
             <div
               style={{
                 display: "flex",
@@ -165,7 +168,7 @@ const InterestPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <h4>อัตราดอกเบี้ยเงินกู้</h4>
+              <h4 className="text-black">อัตราดอกเบี้ยเงินกู้</h4>
             </div>
             <div
               style={{
@@ -174,7 +177,7 @@ const InterestPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <h4>
+              <h4 className="text-black">
                 เริ่ม&nbsp;
                 {interestData.length > 0
                   ? formatDate(interestData[0].InterestDate)
@@ -189,14 +192,14 @@ const InterestPage: React.FC = () => {
                       {" "}
                       <span className="d-block py-1 fw-normal">
                         <b>
-                          <h5>ประเภทเงินกู้</h5>
+                          <h5 className="text-black">ประเภทเงินกู้</h5>
                         </b>
                       </span>
                     </th>
                     <th>
                       <span className="d-block py-1 fw-normal text-end">
                         <b>
-                          <h5>ดอกเบี้ย</h5>
+                          <h5 className="text-black">ดอกเบี้ย</h5>
                         </b>
                       </span>
                     </th>

@@ -9,3 +9,11 @@
     font-family: 'DOHCOOP', sans-serif;
   }
   
+  .loadingCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px; /* Adjust as needed to match your image size */
+    width: 100%;
+  }
+  

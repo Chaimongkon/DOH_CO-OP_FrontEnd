@@ -1,0 +1,5 @@
+.custom-image-size {
+  width: 500px;  /* Set the desired width */
+  height: auto;  /* Maintain aspect ratio */
+  max-width: 100%; /* Ensure responsiveness */
+}

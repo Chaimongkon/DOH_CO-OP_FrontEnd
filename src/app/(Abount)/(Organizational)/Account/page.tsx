@@ -9,30 +9,19 @@ import Box from "@mui/material/Box";
 import { useEffect, useState, useCallback } from "react";
 import Typography from "@mui/joy/Typography"; // Ensure you're importing Typography correctly
 
-interface Board {
+interface Account {
   id: number;
   name: string;
   position: string;
   priority: string;
   type: string;
-  image: string;
+  imagePath: string;
 }
 
-const base64ToBlobUrl = (base64: string) => {
-  const byteCharacters = atob(base64);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], { type: "image/webp" }); // adjust the type if necessary
-  return URL.createObjectURL(blob);
-};
-
 function Account() {
-  const [organizationals, setOrganizationals] = useState<Board[]>([]);
+  const [organizationals, setOrganizationals] = useState<Account[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-
+  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
   const fetchOrganizational = useCallback(async () => {
     try {
       const response = await fetch(`${API}/Organizational`);
@@ -51,7 +40,7 @@ function Account() {
         position: boards.Position,
         priority: boards.Priority,
         type: boards.Type,
-        image: base64ToBlobUrl(boards.Image),
+        imagePath: boards.ImagePath ? `${URLFile}${boards.ImagePath}` : "",
       }));
 
       setOrganizationals(processedData);
@@ -82,17 +71,24 @@ function Account() {
                       gap: 3,
                     }}
                   >
-                    <Card variant="outlined" sx={{ width: 220, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)' }} key={index}>
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        width: 220,
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
+                      }}
+                      key={index}
+                    >
                       <CardOverflow>
                         <AspectRatio ratio="0.9">
-                          <img src={p.image} loading="lazy" alt={p.name} />
+                          <img src={p.imagePath} loading="lazy" alt={p.name} />
                         </AspectRatio>
                       </CardOverflow>
                       <CardContent>
                         <Typography
                           sx={{
                             fontFamily: "DOHCOOP",
-                            fontSize: "1.1rem",
+                            fontSize: "0.91rem",
                             fontWeight: "bold",
                             textAlign: "center", // Corrected alignment
                           }}
@@ -102,7 +98,7 @@ function Account() {
                         <Typography
                           sx={{
                             fontFamily: "DOHCOOP",
-                            fontSize: "1rem",
+                            fontSize: "0.9rem",
                             textAlign: "center", // Corrected alignment
                           }}
                         >

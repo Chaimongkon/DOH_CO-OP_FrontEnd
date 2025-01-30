@@ -9,29 +9,19 @@ import Box from "@mui/material/Box";
 import { useEffect, useState, useCallback } from "react";
 import Typography from "@mui/joy/Typography"; 
 
-interface Board {
+interface Auditor {
   id: number;
   name: string;
   position: string;
   priority: string;
   type: string;
-  image: string;
+  imagePath: string;
 }
 
-const base64ToBlobUrl = (base64: string) => {
-  const byteCharacters = atob(base64);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-  const blob = new Blob([byteArray], { type: "image/webp" }); 
-  return URL.createObjectURL(blob);
-};
-
-function BoardComponent() {
-  const [organizationals, setOrganizationals] = useState<Board[]>([]);
+function AuditorComponent() {
+  const [organizationals, setOrganizationals] = useState<Auditor[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
 
   const fetchOrganizational = useCallback(async () => {
     try {
@@ -45,13 +35,13 @@ function BoardComponent() {
         (board: any) => board.Type === "ผู้ตรวจสอบบัญชีและผู้ตรวจสอบกิจการ"
       );
 
-      const processedData = filteredData.map((boards: any) => ({
-        id: boards.Id,
-        name: boards.Name,
-        position: boards.Position,
-        priority: boards.Priority,
-        type: boards.Type,
-        image: base64ToBlobUrl(boards.Image),
+      const processedData = filteredData.map((auditor: any) => ({
+        id: auditor.Id,
+        name: auditor.Name,
+        position: auditor.Position,
+        priority: auditor.Priority,
+        type: auditor.Type,
+        imagePath: auditor.ImagePath ? `${URLFile}${auditor.ImagePath}` : "",
       }));
 
       setOrganizationals(processedData);
@@ -85,7 +75,7 @@ function BoardComponent() {
                     <Card variant="outlined" sx={{ width: 300, boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)' }} key={index}>
                       <CardOverflow>
                         <AspectRatio ratio="0.9">
-                          <img src={p.image} loading="lazy" alt={p.name} />
+                          <img src={p.imagePath} loading="lazy" alt={p.name} />
                         </AspectRatio>
                       </CardOverflow>
                       <CardContent>
@@ -103,7 +93,7 @@ function BoardComponent() {
                         <Typography
                           sx={{
                             fontFamily: "DOHCOOP",
-                            fontSize: "1rem",
+                            fontSize: "0.9rem",
                             textAlign: "center", 
                           }}
                           level="body-sm"
@@ -143,4 +133,4 @@ function BoardComponent() {
   );
 }
 
-export default BoardComponent;
+export default AuditorComponent;

@@ -10,6 +10,7 @@ import { css } from "@emotion/css";
 interface Notifi {
   id: number;
   image: string;
+  imagePath: string;
   url: string;
   status: boolean;
 }
@@ -37,32 +38,33 @@ const DialogBoxes: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { styles } = useStyle();
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
   const token = useTheme();
   const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
   const rootPrefixCls = getPrefixCls();
   const linearGradientButton = css`
-  &.${rootPrefixCls}-btn-primary:not([disabled]):not(
-    .${rootPrefixCls}-btn-dangerous
-  ) {
-  border-width: 0;
-  background: linear-gradient(135deg, #1D976C, #93F9B9);
-  transition: background 0.3s;
-  position: relative;
-  overflow: hidden;
+    &.${rootPrefixCls}-btn-primary:not([disabled]):not(
+        .${rootPrefixCls}-btn-dangerous
+      ) {
+      border-width: 0;
+      background: linear-gradient(135deg, #f69988, #f36c60);
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
 
-  > span {
-    position: relative;
-  }
+      > span {
+        position: relative;
+      }
 
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      #1A2980,
-      #26D0CE
-    ); /* Change to your desired hover gradient */
-  }
-}
-`;
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          #e51c23,
+          #e84e40
+        ); /* Change to your desired hover gradient */
+      }
+    }
+  `;
   const classNames = {
     body: styles["my-modal-body"],
     mask: styles["my-modal-mask"],
@@ -84,6 +86,7 @@ const DialogBoxes: React.FC = () => {
     },
     content: {
       boxShadow: "0 0 30px #999",
+      padding: "10px 10px", 
     },
   };
   const fetchImages = useCallback(async () => {
@@ -97,7 +100,8 @@ const DialogBoxes: React.FC = () => {
       // Assuming the image data is base64 encoded
       const processedData: Notifi[] = data.map((notify: any) => ({
         id: notify.Id,
-        image: base64ToBlobUrl(notify.Image,"image/webp"),
+        // image: base64ToBlobUrl(notify.Image, "image/webp"),
+        imagePath: notify.ImagePath ? `${URLFile}${notify.ImagePath}` : "",
         url: notify.URLLink,
         status: notify.IsActive,
       }));
@@ -160,7 +164,7 @@ const DialogBoxes: React.FC = () => {
             <Link href={dialog.url}>
               <img
                 className="img-fluid"
-                src={dialog.image}
+                src={dialog.imagePath}
                 alt="Notification Image"
               />
             </Link>

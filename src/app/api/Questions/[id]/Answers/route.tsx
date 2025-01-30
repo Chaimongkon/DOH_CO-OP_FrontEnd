@@ -15,14 +15,14 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   const { id } = params;
-  const { body } = await req.json();
-
-  if (!body) {
+  const { name, body } = await req.json();
+console.log(name  )
+  if (!name || !body) {
     return NextResponse.json({ message: 'Answer body is required' }, { status: 400 });
   }
 
   try {
-    await pool.query('INSERT INTO answers (QuestionId, Body) VALUES (?, ?)', [id, body]);
+    await pool.query('INSERT INTO answers (QuestionId, Name, Body) VALUES (?, ?, ?)', [id, name, body]);
     return NextResponse.json({ message: 'Answer created successfully' }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: 'Error creating answer' }, { status: 500 });

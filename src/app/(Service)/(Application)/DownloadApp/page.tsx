@@ -42,7 +42,7 @@ function MobileApp() {
               >
                 <img
                   className="avatar avatar-xxl p-2 mb-4"
-                  src="image/logo/ios.png"
+                  src="image/logo/ios2024.png"
                   alt="Princess Leia"
                 />
               </a>

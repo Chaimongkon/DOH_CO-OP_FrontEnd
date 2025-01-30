@@ -19,7 +19,7 @@
 /* styles/Header.module.css */
 .customImgSize {
   width: 100%;
-  max-width: 246px;
+  /* max-width: 246px; */
 }
 
 .firstColumn {
@@ -84,7 +84,7 @@
 
 /* Styles for the SubHeader component */
 .bgPentagon {
-  background: url("/public/image/BackgroundSubHeader.png") center center repeat;
+  background: url("/image/BackgroundSubHeader.png") center center repeat;
 }
 .text-sm {
   font-size: 0.875rem;

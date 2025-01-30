@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import ComplaintDialog from "@/app/(ClientSections)/Complaint/ComplaintDialog";
 
 interface Contact {
   Id: number;
@@ -13,6 +14,17 @@ interface Contact {
 function Contact() {
   const [contracts, setContracts] = useState<Contact[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   useEffect(() => {
     const fetchAllContacts = async () => {
       try {
@@ -53,9 +65,9 @@ function Contact() {
                 โทรศัพท์ สายตรงกรมทางหลวง 02-345-6668 ต่อ สายภายในสหกรณ์ <br />
                 โทรศัพท์ สายตรงสหกรณ์ 02-644-7940-43, 02-644-9243, 02-644-4633
                 <br />
-                FAX 02-354-6717 (ฝ่ายทะเบียนหุ้นและบัญชีเงินกู้ ฝ่ายบริหารทั่วไป
-                ฝ่ายบัญชี ) <br />
-                FAX 02-644-4826 (ฝ่ายการเงิน ฝ่ายสินเชื่อ
+                FAX 02-354-6717 (ฝ่ายทะเบียนหุ้นและติดตามหนี้สิน
+                ฝ่ายบริหารทั่วไป ฝ่ายบัญชี ) <br />
+                FAX 02-644-4826 (ฝ่ายการเงินและการลงทุน ฝ่ายสินเชื่อ
                 ฝ่ายประชาสัมพันธ์และสวัสดิการ)
               </p>
 
@@ -151,7 +163,7 @@ function Contact() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      LINE ฝ่ายการเงิน
+                      LINE ฝ่ายการเงินและการลงทุน
                     </Link>
                   </strong>
                 </li>
@@ -184,7 +196,7 @@ function Contact() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      LINE ฝ่ายทะเบียนหุ้นและบัญชีเงินกู้
+                      LINE ฝ่ายทะเบียนหุ้นและติดตามหนี้สิน
                     </Link>
                   </strong>{" "}
                 </li>
@@ -195,15 +207,56 @@ function Contact() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      LINE ฝ่ายหารายได้และสมาชิกสัมพันธ์
+                      LINE ฝ่ายสมาชิกสัมพันธ์และสวัสดิการ
                     </Link>
                   </strong>{" "}
+                </li>
+              </ul>
+              <br></br>
+              <h3 className="text-uppercase mb-3">เลขบัญชีธนาคารของสหกรณ์ฯ</h3>
+              <ul className="text-sm mb-0">
+                <li>
+                  <strong>
+                    <Link
+                      href="/BankAccount"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      บัญชีธนาคารของสหกรณ์ฯ
+                    </Link>
+                  </strong>
+                </li>
+              </ul>
+              <br></br>
+              <h3 className="text-uppercase mb-3">
+                แจ้งข้อเสนอแนะ ร้องเรียนสหกรณ์ฯ
+              </h3>
+              <ul className="text-sm mb-0">
+                <li>
+                  <strong>
+                    <div
+                      className="swiper-slide h-auto"
+                      onClick={handleOpenDialog}
+                      style={{ cursor: "pointer" }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.textDecoration = "underline";
+                        e.currentTarget.style.color = "orange";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.textDecoration = "none";
+                        e.currentTarget.style.color = "initial";
+                      }}
+                    >
+                      แจ้งข้อเสนอแนะ ร้องเรียน
+                    </div>
+                  </strong>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </section>
+      <ComplaintDialog open={isDialogOpen} handleClose={handleCloseDialog} />
       <div className="border-top border-primary">
         <iframe
           title="Unique Title 1"

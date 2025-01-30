@@ -5,7 +5,7 @@ function AppDetails() {
   return (
     <>
       <section
-        className="py-5 bg-fixed bg-cover bg-center dark-overlay"
+        className="py-5 bg-fixed bg-cover-app bg-center dark-overlay"
         style={{
           background: "url(image/BackgroundApp.png)",
           boxShadow: "0px 15px 7px rgba(0, 0, 0, 0.5)",
@@ -26,7 +26,7 @@ function AppDetails() {
               เพิ่มความสะดวกในการทำธุรกรรมได้ทุกที่ ทุกเวลา ผ่าน Application DOH
               Saving.
             </p>
-            <Link className="btn btn-outline-light btn-lg" href="/AppDetail">
+            <Link className="btn btn-outline-light btn-lg" href="/DetailApp">
               ดูรายละเอียดทั้งหมด
             </Link>
           </div>

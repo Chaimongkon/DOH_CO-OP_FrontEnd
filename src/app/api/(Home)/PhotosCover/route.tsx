@@ -1,15 +1,44 @@
-import { NextResponse } from 'next/server';
-import pool from '../../db/mysql'; // Adjust the import path based on your project structure
+import { NextResponse, NextRequest } from "next/server";
+import pool from "../../db/mysql";
+import redis from "../../db/redis"; // Assuming Redis connection is set up correctly
+import { RowDataPacket, FieldPacket } from "mysql2";
+import path from "path";
 
-export async function GET() {
+export const dynamic = "force-dynamic";
+
+// Define the types for the query results
+interface NewsRow extends RowDataPacket {
+  Id: number;
+  Title: string;
+  Cover: string;
+}
+
+export async function GET(req: NextRequest) {
+  let db;
+
   try {
-    const connection = await pool.getConnection();
-    const [rows] = await connection.query('SELECT Id, Title, Cover FROM photoalbum');
-    connection.release();
+    db = await pool.getConnection();
 
-    return NextResponse.json({ photos: rows }, { status: 200 });
+    const query = `SELECT Id, Title, Cover FROM photoalbum ORDER BY Id DESC `;
+
+    const [rows]: [NewsRow[], FieldPacket[]] = await db.query(query);
+
+    // Check for null or undefined values in ImagePath and PdfPath and handle them
+    const processedRows = rows.map((row: NewsRow) => ({
+      ...row,
+      Cover: row.Cover
+        ? `/PhotosCover/File/${row.Cover.replace('/Uploads/PhotoAlbum/', '')}`
+        : null,
+    }));
+
+    return NextResponse.json(processedRows, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Error fetching photos' }, { status: 500 });
+    console.error("Error fetching data:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  } finally {
+    if (db) db.release();
   }
 }

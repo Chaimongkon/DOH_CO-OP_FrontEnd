@@ -1,9 +1,15 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Box, Typography, TextField, Button } from '@mui/material';
-
+"use client";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Divider,
+  Alert,
+} from "@mui/material";
+import { useRouter } from "next/navigation";
 // Define the type for a question
 interface Question {
   Id: number;
@@ -20,22 +26,43 @@ interface Question {
 interface Answer {
   Id: number;
   Body: string;
-  Name: string;      // Add name of the answerer
+  Name: string; // Add name of the answerer
   CreatedAt: string; // Add the time the answer was submitted
 }
 
 const QuestionDetailPage = () => {
   const { id } = useParams();
+  const router = useRouter();
   const [question, setQuestion] = useState<Question | null>(null);
   const [answers, setAnswers] = useState<Answer[]>([]);
-  const [answerBody, setAnswerBody] = useState('');
+  const [answerBody, setAnswerBody] = useState("");
+  const [name, setName] = useState("");
+  const [showError, setShowError] = useState(false);
+
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  // ฟังก์ชันสำหรับแปลงวันที่
+  const formatThaiDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
+
+    // ใช้ 'th-TH' เพื่อแสดงวันที่แบบไทย
+    return date.toLocaleDateString("th-TH", options).replace(",", "") + " น.";
+  };
 
   // Fetch question data and answers
   useEffect(() => {
     const fetchQuestionAndAnswers = async () => {
       if (!API) {
-        console.error('API base URL is not defined');
+        console.error("API base URL is not defined");
         return;
       }
 
@@ -43,13 +70,13 @@ const QuestionDetailPage = () => {
         // Fetch question data
         const questionRes = await fetch(`${API}/Questions/${id}`);
         if (!questionRes.ok) {
-          throw new Error('Failed to fetch question');
+          throw new Error("Failed to fetch question");
         }
         const data = await questionRes.json();
         setQuestion(data.question);
         setAnswers(data.answers);
       } catch (error) {
-        console.error('Error fetching question or answers:', error);
+        console.error("Error fetching question or answers:", error);
       }
     };
 
@@ -59,115 +86,198 @@ const QuestionDetailPage = () => {
   // Submit new answer
   const submitAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const submittedName = name.trim() ? name : "ผู้ไม่ประสงค์ออกนาม";
+    // ตรวจสอบว่าทั้งชื่อและข้อความถูกกรอกหรือไม่
     if (!answerBody.trim()) {
-      alert('Answer cannot be empty');
+      setShowError(true); // แสดงการแจ้งเตือนเมื่อฟิลด์ถูกปล่อยว่าง
       return;
     }
 
+    setShowError(false); // ซ่อนการแจ้งเตือนถ้าข้อมูลถูกกรอกครบ
     try {
       const res = await fetch(`${API}/Questions/${id}/Answers`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ body: answerBody }),
+        body: JSON.stringify({ body: answerBody, name: submittedName }),
       });
 
       if (!res.ok) {
-        throw new Error('Failed to submit answer');
+        throw new Error("Failed to submit answer");
       }
 
-      setAnswerBody('');
+      setAnswerBody("");
+      setName(""); // Clear name input after submission
       // Fetch the updated answers after submitting
       const updatedAnswersRes = await fetch(`${API}/Questions/${id}/Answers`);
       const updatedAnswers: Answer[] = await updatedAnswersRes.json();
       setAnswers(updatedAnswers);
     } catch (error) {
-      console.error('Error submitting answer:', error);
+      console.error("Error submitting answer:", error);
     }
   };
 
   if (!question) return <p>Loading...</p>;
 
   return (
-    <Box sx={{ padding: 3 }}>
-      {/* คำถาม */}
-      <Box
-        sx={{
-          backgroundColor: '#f5f5f5',
-          padding: 2,
-          borderRadius: 2,
-          marginBottom: 3,
-        }}
-      >
-        <Typography variant="h5" gutterBottom>
-          {question.Title}
-        </Typography>
-        <Typography variant="body1" paragraph>
-          {question.Body}
-        </Typography>
-      </Box>
-
-      {/* คำตอบ */}
-      <Box>
-        <Typography variant="h6" gutterBottom>
-          Answers
-        </Typography>
-        <Box
+    <>
+      <section className="py-5">
+        <Typography
+          variant="h4"
+          gutterBottom
           sx={{
-            backgroundColor: '#e0f7fa',
-            padding: 2,
-            borderRadius: 2,
+            fontFamily: "DOHCOOP",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          {answers.length > 0 ? (
-            answers.map((answer, index) => (
+          กระดานถาม-ตอบ (Q&A)
+        </Typography>
+        <div className="container py-4">
+          <Box sx={{ padding: 3 }}>
+            {/* คำถาม */}
+            <Box
+              sx={{
+                backgroundColor: "#FFF7D1",
+                padding: 2,
+                borderRadius: 2,
+                marginBottom: 3,
+              }}
+            >
+              <Typography variant="h5" gutterBottom>
+                {question.Title}
+              </Typography>
+              <Box sx={{ borderBottom: "1px solid #FFD09B", marginY: 2 }} />
+              <Typography variant="body1" paragraph>
+                {question.Body}
+              </Typography>
+              <Box sx={{ borderBottom: "1px solid #FFD09B", marginY: 2 }} />
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <span>โดย {question.Name}</span>
+                <span>โพสเมื่อ {formatThaiDateTime(question.CreatedAt)}</span>
+              </Typography>
+            </Box>
+
+            {/* คำตอบ */}
+            <Box>
+              <Typography variant="h6" gutterBottom>
+                ความคิดเห็น
+              </Typography>
               <Box
-                key={answer.Id}
                 sx={{
-                  backgroundColor: index % 2 === 0 ? '#ffffff' : '#f0f0f0',  // Alternate background colors
+                  backgroundColor: "#D8EFD3",
                   padding: 2,
-                  marginBottom: 2,
-                  borderRadius: 1,
-                  boxShadow: 1,
+                  borderRadius: 2,
                 }}
               >
-                <Typography variant="body1" gutterBottom>
-                  {answer.Body}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  By {answer.Name} on {new Date(answer.CreatedAt).toLocaleString()} {/* Show name and time */}
-                </Typography>
+                {answers.length > 0 ? (
+                  answers.map((answer, index) => (
+                    <Box
+                      key={answer.Id}
+                      sx={{
+                        backgroundColor:
+                          index % 2 === 0 ? "#95D2B3" : "#F1F8E8", // Alternate background colors
+                        padding: 2,
+                        marginBottom: 2,
+                        borderRadius: 1,
+                        boxShadow: 1,
+                      }}
+                    >
+                      <Typography variant="body1" gutterBottom>
+                        {answer.Body}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <span>โดย คุณ {answer.Name}</span>
+                        <span>
+                          ตอบเมื่อ {formatThaiDateTime(answer.CreatedAt)}
+                        </span>
+                      </Typography>
+                    </Box>
+                  ))
+                ) : (
+                  <Typography>
+                    ยังไม่มีความคิดเห็น คุณเป็นคนแรกที่จะแสดงความคิดเห็น!
+                  </Typography>
+                )}
               </Box>
-            ))
-          ) : (
-            <Typography>No answers yet. Be the first to answer!</Typography>
-          )}
-        </Box>
-      </Box>
+            </Box>
 
-      {/* ฟอร์มสำหรับตอบคำถาม */}
-      <Box
-        component="form"
-        onSubmit={submitAnswer}
-        sx={{ marginTop: 3 }}
-      >
-        <TextField
-          fullWidth
-          label="Your answer"
-          multiline
-          rows={4}
-          value={answerBody}
-          onChange={(e) => setAnswerBody(e.target.value)}
-          variant="outlined"
-          sx={{ marginBottom: 2 }}
-        />
-        <Button type="submit" variant="contained" color="primary">
-          Submit Answer
-        </Button>
-      </Box>
-    </Box>
+            <Box
+              sx={{
+                backgroundColor: "#FEFAF6",
+                padding: 2,
+                borderRadius: 2,
+                marginTop: 3,
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                แสดงความคิดเห็น
+              </Typography>
+              {/* ฟอร์มสำหรับตอบคำถาม */}
+              <Box
+                component="form"
+                onSubmit={submitAnswer}
+                sx={{ marginTop: 3 }}
+              >
+                {showError && (
+                  <Alert severity="error">กรุณากรอกความคิดเห็นก่อนส่ง</Alert>
+                )}
+                <TextField
+                  fullWidth
+                  label="แสดงความคิดเห็น"
+                  multiline
+                  rows={4}
+                  value={answerBody}
+                  onChange={(e) => setAnswerBody(e.target.value)}
+                  variant="outlined"
+                  error={showError && !answerBody.trim()} // แสดงกรอบสีแดงถ้าไม่มีการกรอกข้อความ
+                />
+                <TextField
+                  label="โดย"
+                  fullWidth
+                  margin="normal"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="โดย"
+                  sx={{ marginBottom: 2 }}
+                  helperText={
+                    !name.trim()
+                      ? "ถ้าไม่กรอกจะใช้เป็น ผู้ไม่ประสงค์ออกนาม"
+                      : ""
+                  }
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ mr: 2 }} // Adds right margin to create space between the buttons
+                >
+                  แสดงความคิดเห็น
+                </Button>
+
+                <Button type="submit" variant="contained" color="error" onClick={() => router.back()}>
+                  กลับหน้าหลัก Q&A
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </div>
+      </section>
+    </>
   );
 };
 

@@ -1,15 +1,17 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
-import { Navigation } from 'swiper/modules';
+import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import 'swiper/css/navigation';
+import "swiper/css/navigation";
 import Link from "next/link";
 import { useState } from "react";
-import Complaint from "@/app/(ClientSections)/Complaint/page";
+import { useRouter } from "next/navigation";
+import ComplaintDialog from "@/app/(ClientSections)/Complaint/ComplaintDialog"; // Import new dialog component
 
 export default function SwiperMenu() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const router = useRouter();
 
   const handleOpenDialog = () => {
     setIsDialogOpen(true);
@@ -17,6 +19,21 @@ export default function SwiperMenu() {
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+  };
+
+  const handleViewAllClick = () => {
+    localStorage.setItem("menuName", "กระดานถาม-ตอบ (Q&A)");
+    router.push("/Questions");
+  };
+
+  const handleBankClick = () => {
+    localStorage.setItem("menuName", "บัญชีธนาคารสหกรณ์");
+    router.push("/BankAccount");
+  };
+
+  const handleContactClick = () => {
+    localStorage.setItem("menuName", "ติดต่อเรา");
+    router.push("/Contact");
   };
   return (
     <>
@@ -62,35 +79,30 @@ export default function SwiperMenu() {
         </SwiperSlide>
 
         <SwiperSlide style={{ width: "270px" }}>
-          <div className="swiper-slide h-auto">
-            <Link href="/BankAccount">
+          <div className="swiper-slide h-auto" style={{ cursor: "pointer" }}>
               <img
                 className="img-fluid img-grayscale d-block mx-auto"
                 src="image/ImageMenu/bookbankcoop.png"
                 alt="..."
                 style={{ width: "135px" }}
+                onClick={handleBankClick}
               />
               <p className="lead mb-4" style={{ textAlign: "center" }}>
                 บัญชีธนาคารสหกรณ์
               </p>
-            </Link>
           </div>
         </SwiperSlide>
 
         <SwiperSlide style={{ width: "270px" }}>
-          <div className="swiper-slide h-auto">
-          <a
-              href="/Questions"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          <div className="swiper-slide h-auto" style={{ cursor: "pointer" }}>
             <img
               className="img-fluid img-grayscale d-block mx-auto"
               src="image/ImageMenu/QA.png"
               alt="..."
               style={{ width: "100px" }}
+              onClick={handleViewAllClick}
             />
-             </a>
+
             <p className="lead mb-4" style={{ textAlign: "center" }}>
               กระดานถาม ตอบ
             </p>
@@ -98,7 +110,11 @@ export default function SwiperMenu() {
         </SwiperSlide>
 
         <SwiperSlide style={{ width: "270px" }}>
-          <div className="swiper-slide h-auto" onClick={handleOpenDialog}>
+          <div
+            className="swiper-slide h-auto"
+            onClick={handleOpenDialog}
+            style={{ cursor: "pointer" }}
+          >
             <img
               className="img-fluid img-grayscale d-block mx-auto"
               src="image/ImageMenu/Report.png"
@@ -130,8 +146,7 @@ export default function SwiperMenu() {
         </SwiperSlide>
 
         <SwiperSlide style={{ width: "270px" }}>
-          <div className="swiper-slide h-auto">
-            <Link href="/Contact">
+          <div className="swiper-slide h-auto" style={{ cursor: "pointer" }}>
               <img
                 className="img-fluid img-grayscale d-block mx-auto"
                 src="image/ImageMenu/Contact.png"
@@ -141,15 +156,15 @@ export default function SwiperMenu() {
                   borderRadius: "50%",
                   boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.5)",
                 }}
+                onClick={handleContactClick}
               />
               <p className="lead mb-4" style={{ textAlign: "center" }}>
                 ติดต่อ สอ.ทล.
               </p>
-            </Link>
           </div>
         </SwiperSlide>
       </Swiper>
-      <Complaint open={isDialogOpen} handleClose={handleCloseDialog} />
+      <ComplaintDialog open={isDialogOpen} handleClose={handleCloseDialog} />
     </>
   );
 }

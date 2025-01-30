@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import ComplaintDialog from "@/app/(ClientSections)/Complaint/ComplaintDialog";
 
-function Footer() {
+interface FooterProps {
+  className?: string;
+}
+
+function Footer({ className }: FooterProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
   return (
     <>
-      <footer>
+      <footer className={className}>
         {/* MAIN FOOTER*/}
         <div className="bg-gray-700 text-white py-5">
           <div className="container py-4">
@@ -18,6 +32,27 @@ function Footer() {
                 <hr />
                 <h4 className="h6 text-uppercase">ศูนย์บริการข้อมูลสมาชิก</h4>
                 <h2 className="h2 text-uppercase">02-644-4633</h2>
+                <hr />
+                <h4 className="mb-3 text-uppercase">
+                  แจ้งข้อเสนอแนะ ร้องเรียนสหกรณ์ฯ
+                </h4>
+                <div
+                  className="swiper-slide h-auto"
+                  onClick={handleOpenDialog}
+                  style={{ cursor: "pointer" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.textDecoration = "underline";
+                    e.currentTarget.style.color = "white";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.textDecoration = "none";
+                    e.currentTarget.style.color = "initial";
+                  }}
+                >
+                  <h6 className="text-uppercase mb-0 text-white">
+                    แจ้งข้อเสนอแนะ ร้องเรียน
+                  </h6>
+                </div>
               </div>
               <div className="col-lg-3">
                 <h4 className="mb-3 text-uppercase">ลิ้งก์ที่เกี่ยวข้อง</h4>
@@ -195,6 +230,7 @@ function Footer() {
           </div>
         </div>
       </footer>
+      <ComplaintDialog open={isDialogOpen} handleClose={handleCloseDialog} />
     </>
   );
 }

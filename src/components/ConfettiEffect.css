@@ -1,0 +1,35 @@
+/* ConfettiEffect.css */
+.fireworks-container {
+  position: absolute; /* แสดงให้ครอบคลุมพื้นที่ทั้งหมด */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* อยู่ด้านหลัง header */
+  pointer-events: none;
+}
+
+.topBar {
+  position: relative; /* กำหนดตำแหน่งให้ header */
+  z-index: 1; /* อยู่เหนือ tsparticles */
+}
+
+/* Snowflake.module.css */
+.overlay {
+  position: fixed;
+  top: auto;
+  left: auto;
+  right: 10px;
+  bottom: 10px;
+  color: hsl(0, 0%, 100%);
+  opacity: 0.2;
+  font-family: monospace;
+}
+
+.overlay a {
+  color: hsl(190, 60%, 70%);
+}
+
+.overlay:hover {
+  opacity: 0.8;
+}
