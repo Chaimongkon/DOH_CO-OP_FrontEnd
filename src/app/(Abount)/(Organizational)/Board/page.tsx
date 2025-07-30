@@ -32,7 +32,7 @@ function BoardComponent() {
       const data = await response.json();
 
       const filteredData = data.filter(
-        (board: any) => board.Type === "คณะกรรมการดำเนินการ"
+        (board: any) => board.Type === "คณะกรรมการดำเนินการ ชุดที่ 49"
       );
 
       const processedData = filteredData.map((boards: any) => ({

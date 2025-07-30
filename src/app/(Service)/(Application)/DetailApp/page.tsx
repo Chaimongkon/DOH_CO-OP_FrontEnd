@@ -147,9 +147,9 @@ function DetailApp() {
                   </p>
                   <ul className="list-inline mb-0 box-image-text-content">
                     <li className="list-inline-item">
-                      <a className="btn btn-outline-light" href="/404">
+                    <Link className="btn btn-outline-light" href="/Dividend">
                         รายละเอียด
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>

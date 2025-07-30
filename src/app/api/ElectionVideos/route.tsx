@@ -14,7 +14,7 @@ export async function GET() {
   let db;
   try {
     db = await pool.getConnection();
-    const query = "SELECT Id, Title, YouTubeUrl, Details FROM electionvideos ORDER BY Id DESC";
+    const query = "SELECT Id, Title, YouTubeUrl, Details FROM electionvideos ORDER BY Id ASC";
     const [rows]: [VideoRow[], FieldPacket[]] = await db.execute(query);
 
     return NextResponse.json(rows, { status: 200 });

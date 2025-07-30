@@ -203,7 +203,11 @@ const ElectionPage = () => {
                     </Box>
                     <Box display="flex">
                       <Box sx={{ flexGrow: 1, m: 1 }}>
-                        <h3>
+                        <h3
+                          style={{
+                            fontSize: "calc(1.11rem + 0.3vw)", // ใช้ขนาดที่รองรับ responsive
+                          }}
+                        >
                           หน่วยงาน : <b>{results?.Department}</b>
                         </h3>
                       </Box>
@@ -214,6 +218,7 @@ const ElectionPage = () => {
                           style={{
                             color: "darkgreen",
                             textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)", // เพิ่มเงาให้ข้อความเพื่อมิติ
+                            fontSize: "calc(1.11rem + 1.11vw)", // ใช้ขนาดที่รองรับ responsive
                           }}
                         >
                           <i className="fa-solid fa-share flash"></i> &nbsp;
