@@ -1,0 +1,226 @@
+/* Fireworks Happy New Year Global Styles */
+
+/* Auto adjust text color when fireworks active */
+body:has(.fireworks-overlay) {
+  color: white !important;
+}
+
+body:has(.fireworks-overlay) h1,
+body:has(.fireworks-overlay) h2, 
+body:has(.fireworks-overlay) h3,
+body:has(.fireworks-overlay) h4,
+body:has(.fireworks-overlay) h5,
+body:has(.fireworks-overlay) h6,
+body:has(.fireworks-overlay) p,
+body:has(.fireworks-overlay) span,
+body:has(.fireworks-overlay) div {
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+}
+
+/* Override Bootstrap text classes when fireworks active */
+body:has(.fireworks-overlay) .text-muted,
+body:has(.fireworks-overlay) .text-muted-new,
+body:has(.fireworks-overlay) .text-secondary,
+body:has(.fireworks-overlay) .text-dark,
+body:has(.fireworks-overlay) .text-black {
+  color: #6c757d !important;
+  --bs-text-opacity: 1 !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+}
+
+/* Override Bootstrap variable colors when fireworks active */
+body:has(.fireworks-overlay) {
+  --bs-secondary-color: white !important;
+  --bs-dark-color: white !important;
+  --bs-gray-600: white !important;
+  --bs-gray-700: white !important;
+  --bs-gray-500: #6c757d !important;
+}
+
+/* Force override Bootstrap text-muted-new when fireworks active */
+.text-muted-new {
+  --bs-text-opacity: 1 !important;
+  color: white !important;
+  --bs-secondary-color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}
+
+/* Additional Bootstrap overrides */
+.text-muted,
+.text-secondary,
+.text-dark {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}
+
+/* Override Bootstrap CSS variables globally when fireworks active */
+:root:has(.fireworks-overlay) {
+  --bs-secondary-color: white !important;
+  --bs-muted-color: white !important;
+  --bs-gray-600: white !important;
+}
+
+/* Force footer above fireworks */
+.footer-top,
+footer,
+.footer {
+  z-index: 100 !important;
+  position: relative !important;
+}
+
+/* Fireworks overlay - keep as background */
+.fireworks-overlay {
+  z-index: -10 !important;
+  position: fixed !important;
+}
+
+/* Override swiper stacking context */
+.swiper-container,
+.swiper {
+  z-index: 1 !important;
+  isolation: auto !important;
+}
+/* Force topbar above fireworks */
+.top-header,
+.topbar,
+nav,
+.navbar {
+  z-index: 100 !important;
+  position: relative !important;
+}
+
+/* Change #2A2A2A text to white when fireworks active */
+body:has(.fireworks-overlay) * {
+  color: white !important;
+}
+
+/* Specific color overrides */
+body:has(.fireworks-overlay) *[style*='color: #2A2A2A'],
+body:has(.fireworks-overlay) *[style*='color: #2a2a2a'],
+body:has(.fireworks-overlay) *[style*='color: rgb(42, 42, 42)'] {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}
+
+/* Override CSS variables for dark grays */
+:root:has(.fireworks-overlay) {
+  --color-2a2a2a: white !important;
+  --text-color-dark: white !important;
+  --dark-gray: white !important;
+}
+
+/* Fix specific classes that don't turn white */
+body:has(.fireworks-overlay) .reset-link,
+body:has(.fireworks-overlay) .lined,
+body:has(.fireworks-overlay) .lined-center,
+body:has(.fireworks-overlay) .text-uppercase {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}
+
+/* Override inherit color specifically */
+body:has(.fireworks-overlay) *[style*='color: inherit'],
+body:has(.fireworks-overlay) .reset-link {
+  color: white !important;
+}
+
+/* Force override for stubborn elements */
+body:has(.fireworks-overlay) .lined.lined-center.text-uppercase {
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+}
+
+/* Nuclear option - force ALL text white */
+body:has(.fireworks-overlay) *,
+body:has(.fireworks-overlay) *:before,
+body:has(.fireworks-overlay) *:after,
+body:has(.fireworks-overlay) a,
+body:has(.fireworks-overlay) span,
+body:has(.fireworks-overlay) div,
+body:has(.fireworks-overlay) p,
+body:has(.fireworks-overlay) h1,
+body:has(.fireworks-overlay) h2,
+body:has(.fireworks-overlay) h3,
+body:has(.fireworks-overlay) h4,
+body:has(.fireworks-overlay) h5,
+body:has(.fireworks-overlay) h6 {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}
+
+/* Override ALL possible color properties */
+body:has(.fireworks-overlay) * {
+  --color: white !important;
+  --text-color: white !important;
+  --bs-body-color: white !important;
+}
+
+
+/* Fix CoopHistory page text colors when fireworks active */
+body:has(.fireworks-overlay) .CoopHistory_historyTitle__NIOzv {
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+}
+
+/* General fix for CSS modules classes that start with CoopHistory */
+body:has(.fireworks-overlay) *[class*='CoopHistory_'] {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}
+
+/* Force ALL text in CoopHistory page to white when fireworks active */
+body:has(.fireworks-overlay) *[class*='CoopHistory'] *,
+body:has(.fireworks-overlay) *[class*='CoopHistory'],
+body:has(.fireworks-overlay) [class*='CoopHistory_'] *,
+body:has(.fireworks-overlay) [class*='CoopHistory_'] {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}
+
+/* Ensure CoopHistory content is above fireworks */
+body:has(.fireworks-overlay) *[class*='CoopHistory'],
+body:has(.fireworks-overlay) [class*='CoopHistory_'] {
+  position: relative !important;
+  z-index: 10 !important;
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8) !important;
+}
+
+/* Force all CoopHistory content above background */
+*[class*='CoopHistory'],
+[class*='CoopHistory_'] {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Additional Bootstrap gray variables override */
+body:has(.fireworks-overlay) {
+  --bs-gray-400: white !important;
+  --bs-gray-800: white !important;
+  --bs-gray-900: white !important;
+  --bs-secondary: white !important;
+  --bs-body-color: white !important;
+  --text-muted: white !important;
+}
+
+/* Override ALL Bootstrap gray variables that might be used */
+:root:has(.fireworks-overlay),
+body:has(.fireworks-overlay) {
+  --bs-gray-100: white !important;
+  --bs-gray-200: white !important;
+  --bs-gray-300: white !important;
+  --bs-gray-400: white !important;
+  --bs-gray-500: #6c757d !important;
+  --bs-gray-600: white !important;
+  --bs-gray-700: white !important;
+  --bs-gray-800: white !important;
+  --bs-gray-900: white !important;
+}
+
+/* Force override for elements using CSS variables */
+body:has(.fireworks-overlay) *[style*='var(--bs-gray'],
+body:has(.fireworks-overlay) *[style*='color: var(--bs'] {
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+}

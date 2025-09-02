@@ -1,143 +1,83 @@
-import { useEffect, useMemo, useState } from "react";
-import Particles from "@tsparticles/react";
-import { type Container, type ISourceOptions, MoveDirection, OutMode } from "@tsparticles/engine";
-import { loadSlim } from "@tsparticles/slim";
-import { initParticlesEngine } from "@tsparticles/react";
+import { useEffect, useState } from "react";
+import logger from "@/lib/logger";
 
 const ParticlesImg = () => {
-  const [init, setInit] = useState(false);
   const [showParticles, setShowParticles] = useState(false);
-  const [images, setImages] = useState<{ src: string; width: number; height: number }[]>([]);
+  const [images, setImages] = useState<string[]>([]);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const URLImg = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
         const response = await fetch(`${API}/Particles`);
         const data = await response.json();
+        
+        logger.info(`Particles data: ${JSON.stringify(data)}`);
+        logger.info(`isActive value: ${data.isActive}, type: ${typeof data.isActive}`);
 
-        if (data.isActive === 1) {
+        // Check if particles should be enabled (isActive = 1 for particles)
+        if (data.isActive === 1 || data.isActive === "1") {
           setImages(
-            data.images.map((imgUrl: string) => ({
-              src: `${URLImg}/${imgUrl}`,
-              width: 20,
-              height: 20,
-            }))
+            data.images.map((imgUrl: string) => `${API}${imgUrl}`)
           );
           setShowParticles(true);
+          logger.info(`Particles enabled with ${data.images.length} images`);
         } else {
           setShowParticles(false);
+          logger.info(`Particles disabled, isActive: ${data.isActive}`);
         }
       } catch (error) {
-        console.error("Error fetching images:", error);
+        logger.error("Error fetching images", error);
         setShowParticles(false);
       }
     };
 
     fetchImages();
-  }, [API, URLImg]);
+  }, [API]);
 
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
-  }, []);
-
-  const particlesLoaded = async (container?: Container): Promise<void> => {};
-
-  const options: ISourceOptions | undefined = useMemo(() => {
-    if (images.length === 0) return undefined;
-
-    return {
-      fpsLimit: 120,
-      interactivity: {
-        detectsOn: "window",
-        events: {
-          onClick: {
-            enable: true,
-            mode: "push",
-          },
-          onHover: {
-            enable: true,
-            mode: "bubble",
-          },
-        },
-        modes: {
-          bubble: {
-            distance: 400,
-            duration: 2,
-            opacity: 0.8,
-            size: 70,
-          },
-          push: {
-            quantity: 1,
-          },
-        },
-      },
-      particles: {
-        move: {
-          direction: MoveDirection.bottom,
-          enable: true,
-          speed: 2,
-          outModes: {
-            default: OutMode.out,
-          },
-        },
-        number: {
-          density: {
-            enable: true,
-            area: 800,
-          },
-          value: 20,
-        },
-        opacity: {
-          value: { min: 0.3, max: 0.9 },
-          animation: {
-            enable: true,
-            speed: 0.9,
-            minimumValue: 0,
-            sync: false,
-          },
-        },
-        shape: {
-          type: "image",
-          options: {
-            image: images,
-          },
-        },
-        size: {
-          value: { min: 10, max: 50 },
-        },
-        life: {
-          count: 6,
-          delay: {
-            value: 1,
-            sync: true,
-          },
-          duration: {
-            value: 9,
-            sync: false,
-          },
-        },
-      },
-      detectRetina: true,
-    };
-  }, [images]);
-
-  if (init && showParticles && options) {
-    return (
-      <Particles
-        id="tsparticles"
-        particlesLoaded={particlesLoaded}
-        options={options}
-      />
-    );
+  if (!showParticles || images.length === 0) {
+    return null;
   }
 
-  return null;
+  return (
+    <div className="particles-container">
+      {[...Array(20)].map((_, i) => (
+        <div
+          key={i}
+          className="falling-particle"
+          style={{
+            position: "fixed",
+            left: `${Math.random() * 100}%`,
+            top: "-50px",
+            width: `${10 + Math.random() * 40}px`,
+            height: `${10 + Math.random() * 40}px`,
+            backgroundImage: `url(${images[Math.floor(Math.random() * images.length)]})`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            opacity: 0.3 + Math.random() * 0.6,
+            animation: `fall ${5 + Math.random() * 5}s linear infinite`,
+            animationDelay: `${Math.random() * 5}s`,
+            pointerEvents: "none",
+            zIndex: 1
+          }}
+        />
+      ))}
+      
+      <style jsx>{`
+        @keyframes fall {
+          to {
+            transform: translateY(100vh) rotate(360deg);
+          }
+        }
+        
+        .falling-particle:hover {
+          transform: scale(1.2);
+          transition: transform 0.3s ease;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default ParticlesImg;

@@ -1,5 +1,7 @@
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import ComplaintDialog from "@/app/(ClientSections)/Complaint/ComplaintDialog";
 
 interface FooterProps {
@@ -160,11 +162,13 @@ function Footer({ className }: FooterProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <img
+                      <Image
                         className="img-fluid"
                         src="/image/logo/facebook.png"
-                        alt="..."
+                        alt="Facebook page of DOH Cooperative"
                         width={70}
+                        height={70}
+                        style={{ width: "auto", height: "auto" ,maxWidth: "115px"}}
                       />
                     </Link>
                   </li>
@@ -174,37 +178,41 @@ function Footer({ className }: FooterProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <img
+                      <Image
                         className="img-fluid"
                         src="/image/logo/LineOA.png"
-                        alt="..."
+                        alt="Line Official Account of DOH Cooperative"
                         width={70}
+                        height={70}
+                        style={{ width: "auto", height: "auto" ,maxWidth: "115px"}}
                       />
                     </Link>
                   </li>
                   <li className="list-inline-item mb-2 me-2 pb-1">
                     <Link href="mailto:dohcoop@hotmail.com">
-                      <img
+                      <Image
                         className="img-fluid"
                         src="/image/logo/Email.png"
-                        alt="..."
+                        alt="Email contact for DOH Cooperative"
                         width={70}
+                        height={70}
+                        style={{ width: "auto", height: "auto" ,maxWidth: "115px"}}
                       />
                     </Link>
                   </li>
-                </ul>
-                <ul className="list-inline mb-0">
                   <li className="list-inline-item mb-2 me-2 pb-1">
                     <Link
                       href="https://www.youtube.com/@dohcoop..0161/videos"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <img
+                      <Image
                         className="img-fluid"
                         src="/image/logo/youtube.png"
-                        alt="..."
+                        alt="YouTube channel of DOH Cooperative"
                         width={70}
+                        height={70}
+                        style={{ width: "auto", height: "auto" , maxWidth: "115px"}}
                       />
                     </Link>
                   </li>

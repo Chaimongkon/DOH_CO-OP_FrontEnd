@@ -1,9 +1,10 @@
 // utils/incrementVisitCount.js
+import logger from '@/lib/logger';
 
 export const incrementVisitCount = async (API: string | undefined) => {
     try {
       const visitCountSent = localStorage.getItem("visitCountSent");
-      console.log(visitCountSent);
+      logger.info('Visit count status', { visitCountSent });
       if (!visitCountSent) {
         const response = await fetch(`${API}Visits/Create`, {
           method: "POST",
@@ -18,7 +19,7 @@ export const incrementVisitCount = async (API: string | undefined) => {
         }
       }
     } catch (error) {
-      console.error("Error:", error);
+      logger.error('Error incrementing visit count', error);
     }
   };
   

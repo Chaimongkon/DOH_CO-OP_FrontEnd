@@ -1,0 +1,19 @@
+/* NewsAll.module.css */
+
+/* Input group styling to ensure proper border radius */
+.searchGroup {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+/* Search input styling */
+.searchInput {
+  border-radius: 12px 0 0 12px !important;
+  border-right: none !important;
+}
+
+/* Search button styling */
+.searchButton {
+  border-radius: 0 12px 12px 0 !important;
+  border-left: none !important;
+}

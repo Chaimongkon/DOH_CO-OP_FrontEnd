@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+import logger from '@/lib/logger';
 
 export default function VisitsCount() {
   const API = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -54,11 +55,11 @@ export default function VisitsCount() {
           document.cookie = "visitRecorded=true; max-age=86400; path=/"; // Cookie expires in 24 hours
           visitRecorded.current = true;
         } else {
-          console.error("Error in response data:", data);
+          logger.error("Error in response data", { data });
           visitRecorded.current = false;
         }
       } catch (error) {
-        console.error("Error recording visit:", error);
+        logger.error("Error recording visit", error);
         visitRecorded.current = false; // Retry logic can be implemented here
       }
     };

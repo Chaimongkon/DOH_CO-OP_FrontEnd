@@ -1,78 +1,73 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { message } from "antd";
-import { Services } from "@/types";
+import Image from "next/image";
+import { useServiceData } from "@/hooks/useServiceData";
 
 const TimeDeposit24 = () => {
-  const [service, setService] = useState<Services[]>([]);
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
+  const { service, loading, error } = useServiceData("เงินฝากประจำ 24 เดือน");
+  const customLabels = ["แบบฟอร์มเงินฝากประจำ 24 เดือน", "บันทึกข้อความเงินฝากประจำ 24 เดือน"];
 
-  const fetchImages = useCallback(async () => {
-    try {
-      const response = await fetch(`${API}/Serve`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
+  if (loading) {
+    return (
+      <section className="py-5">
+        <div className="container py-4">
+          <center>
+            <div>กำลังโหลดข้อมูล...</div>
+          </center>
+        </div>
+      </section>
+    );
+  }
 
-      const processedData: Services[] = data
-        .map((service: any) => ({
-          id: service.Id,
-          imagePath: service.ImagePath ? `${URLFile}${service.ImagePath}` : "",
-          subcategories: service.Subcategories,
-          urlLink: service.URLLink,
-          status: service.IsActive,
-        }))
-        .filter(
-          (service: Services) =>
-            service.subcategories === "เงินฝากประจำ 24 เดือน"
-        );
-
-      setService(processedData);
-    } catch (error) {
-      console.error("Failed to fetch images:", error);
-      message.error("Failed to fetch images.");
-    }
-  }, [API, URLFile]);
-
-  useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
+  if (error) {
+    return (
+      <section className="py-5">
+        <div className="container py-4">
+          <center>
+            <div>เกิดข้อผิดพลาด: {error}</div>
+          </center>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-5">
       {service.map((s) => (
         <div className="container py-4" key={s.id}>
           <center>
-            <img
+            <Image
               className="img-fluid-7"
               src={s.imagePath}
-              alt="Service Image"
+              alt={`Service Image for ${s.subcategories}`}
+              width={800}
+              height={600}
+              priority
             />
           </center>
-          {s.urlLink && (
+          {s.urlLinks && s.urlLinks.length > 0 && (
             <div className="container py-4">
               <div className="row gy-4">
-                <h3 className="text-uppercase lined mb-4">
-                  ดาวน์โหลดเอกสาร
-                </h3>
+                <h3 className="text-uppercase lined mb-4">ดาวน์โหลดเอกสาร</h3>
               </div>
               <ul className="list-unstyled">
-                <li className="d-flex mb-3">
-                  <div className="icon-filled2 me-2">
-                    <i className="fas fa-download"></i>
-                  </div>
-                  <a
-                    href={s.urlLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="cursor-pointer"
-                  >
-                    <p className="text-sm312 mb-0">แบบฟอร์ม{s.subcategories}</p>
-                  </a>
-                </li>
+                {s.urlLinks.map((link: string, index: number) => (
+                  <li className="d-flex mb-3" key={index}>
+                    <div className="icon-filled2 me-2">
+                      <i className="fas fa-download"></i>
+                    </div>
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cursor-pointer"
+                    >
+                      <p className="text-sm312 mb-0">
+                        {customLabels[index] || `แบบฟอร์ม ${s.subcategories}`}
+                      </p>
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           )}

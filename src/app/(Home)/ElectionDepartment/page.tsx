@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import {
   Paper,
   Table,
@@ -14,18 +15,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Box,
-  Container,
   InputBase,
   Divider,
   IconButton,
   useMediaQuery,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import Swal from "sweetalert2";
-import Lottie from "react-lottie";
-import animationData from "../../loading2.json";
+import { useApiConfig } from "@/hooks/useApiConfig";
 
 interface Column {
   id: "Image" | "DepartmentName" | "File";
@@ -52,8 +49,6 @@ interface Data {
 }
 
 export default function NewAll() {
-  const theme = useTheme();
-  const [loading, setLoading] = useState(true);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -62,18 +57,10 @@ export default function NewAll() {
   const [open, setOpen] = useState(false);
   const [filePath, setFilePath] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL!;
-  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL!;
+  const { API, URLFile } = useApiConfig();
 
   // Lottie options
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+  // Lottie props will be passed directly to component
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -103,7 +90,7 @@ export default function NewAll() {
       const data = await response.json();
       setTotalRows(data.total || 0);
       setRows(data.data || []);
-    } catch (error) {
+    } catch {
       Swal.fire("Error", "Failed to fetch data. Please try again.", "error");
     }
   }, [API, page, rowsPerPage, search]);
@@ -187,10 +174,12 @@ export default function NewAll() {
                             sx={{ fontSize: "18px" }}
                           >
                             {column.id === "Image" ? (
-                              <img
+                              <Image
                                 src="/image/logo/pdfdl.png"
-                                alt={row.DepartmentName}
-                                style={{ width: "50px" }}
+                                alt={`PDF icon for ${row.DepartmentName}`}
+                                width={50}
+                                height={50}
+                                style={{ width: "50px", height: "auto" }}
                               />
                             ) : column.id === "File" ? (
                               <Button

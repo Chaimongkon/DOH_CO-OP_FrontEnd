@@ -5,7 +5,7 @@ interface SubHeaderProps {
   menuName: string;
 }
 
-export default function SubHeader({ menuName }: SubHeaderProps) {
+function SubHeader({ menuName }: SubHeaderProps) {
   return (
     <div>
       <section className={`bg-pentagon py-4 ${styles.bgPentagon}`}>
@@ -35,3 +35,6 @@ export default function SubHeader({ menuName }: SubHeaderProps) {
     </div>
   );
 }
+
+// Memoize SubHeader to prevent unnecessary re-renders when menuName doesn't change
+export default React.memo(SubHeader);

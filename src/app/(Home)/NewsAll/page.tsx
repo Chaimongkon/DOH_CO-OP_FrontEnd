@@ -3,67 +3,72 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Pagination from "@mui/material/Pagination";
 import { useMediaQuery } from "@mui/material";
 import { message } from "antd";
-import Lottie from "react-lottie";
-import debounce from "lodash.debounce"; // Use lodash for debouncing input
-import animationData from "../../loading2.json";
-
+import debounce from "lodash.debounce";
+import { LottieSectionLoading } from "@/components/LottieLoading";
+import Image from "next/image";
+import logger from "@/lib/logger";
+import { NewsItem } from "@/types";
+import styles from "../News/HomeNews.module.css";
+import newsAllStyles from "./NewsAll.module.css";
+import { useApiConfig } from "@/hooks/useApiConfig";
+import useButtonLoading from "@/hooks/useButtonLoading";
 function NewsAll() {
   const [page, setPage] = useState(1);
   const [rowsPerPage] = useState(10); // Rows per page, keep it constant
   const [totalRows, setTotalRows] = useState(0); // Total number of items
   const [search, setSearch] = useState("");
-  const [news, setNews] = useState<any[]>([]);
+  const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const { isLoading, withLoading } = useButtonLoading();
 
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
+  const { API } = useApiConfig();
 
   // Responsive check for mobile devices
   const isMobile = useMediaQuery("(max-width:991px)");
 
-  const defaultOptions = useMemo(
-    () => ({
-      loop: true,
-      autoplay: true,
-      animationData: animationData,
-      rendererSettings: {
-        preserveAspectRatio: "xMidYMid slice",
-      },
-    }),
-    []
-  );
 
-  // Optimized fetch function using memoization
+  // Optimized fetch function using memoization  
   const fetchNews = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${API}/NewsAll?page=${page}&per_page=${rowsPerPage}&search=${search}`
+        `${API}/News?page=${page}&per_page=${rowsPerPage}&search=${search}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      const processedData = data.data.map((newsItem: any) => ({
-        id: newsItem.Id,
-        title: newsItem.Title,
-        details: newsItem.Details,
-        imagePath: newsItem.ImagePath ? `${URLFile}${newsItem.ImagePath}` : "",
-        pdfPath: newsItem.PdfPath ? `${URLFile}${newsItem.PdfPath}` : "",
-        createDate: newsItem.CreateDate,
-      }));
+      
+      // Handle pagination response from News API
+      const responseData = data.data || {};
+      const newsItems = responseData.data || [];
+      const processedData = newsItems.map((newsItem: NewsItem) => {
+        // Fix image path to use correct API route
+        const imagePath = newsItem.ImagePath 
+          ? `${API}/News/File/Image/${newsItem.ImagePath.split('/').pop()}` 
+          : undefined;
+        const pdfPath = newsItem.PdfPath 
+          ? `${API}/News/File/Pdf/${newsItem.PdfPath.split('/').pop()}` 
+          : undefined;
+        
+        return {
+          Id: newsItem.Id,
+          Title: newsItem.Title,
+          Details: newsItem.Details,
+          CreateDate: newsItem.CreateDate,
+          ImagePath: imagePath,
+          PdfPath: pdfPath,
+        };
+      });
       setNews(processedData);
-      setTotalRows(data.total); // Set the total rows for pagination
+      setTotalRows(responseData.total || 0);
     } catch (error) {
-      console.error("Failed to fetch news:", error);
+      logger.error("Failed to fetch news:", error);
       message.error("Failed to fetch news");
     } finally {
       setLoading(false);
     }
-  }, [API, page, rowsPerPage, search, URLFile]);
+  }, [API, page, rowsPerPage, search]);
 
   // Handle search with debounce to prevent unnecessary fetches
   const debouncedSearchChange = useMemo(
@@ -88,19 +93,18 @@ function NewsAll() {
   }, [debouncedSearchChange]);
 
   // Handle PDF click event
-  const handlePdfClick = async (newsItem: any, index: number) => {
-    if (newsItem.pdfPath) {
-      setButtonLoading((prev) => ({ ...prev, [index]: true }));
-      try {
-        window.open(newsItem.pdfPath, "_blank");
-      } catch (error) {
-        message.error("Failed to open PDF");
-      } finally {
-        setButtonLoading((prev) => ({ ...prev, [index]: false }));
+  const handlePdfClick = async (newsItem: NewsItem, index: number) => {
+    await withLoading(index, async () => {
+      if (newsItem.PdfPath) {
+        try {
+          window.open(newsItem.PdfPath, "_blank");
+        } catch {
+          message.error("Failed to open PDF");
+        }
+      } else {
+        message.error("PDF not available");
       }
-    } else {
-      message.error("PDF not available");
-    }
+    })();
   };
 
   // Handle pagination change
@@ -114,6 +118,9 @@ function NewsAll() {
   return (
     <section className="py-5">
       <div className="container py-4">
+        {loading ? (
+          <LottieSectionLoading tip="กำลังโหลดข่าวประชาสัมพันธ์..." />
+        ) : (
           <>
             <header className="mb-5">
               <h2 className="lined lined-center text-uppercase">
@@ -124,16 +131,16 @@ function NewsAll() {
               {isMobile && (
                 <div className="col-lg-3 mb-4">
                   <h3 className="h4 lined text-uppercase mb-4">ค้นหา</h3>
-                  <div className="input-group mb-3">
+                  <div className={`input-group mb-3 ${newsAllStyles.searchGroup}`}>
                     <input
-                      className="form-control"
+                      className={`form-control ${newsAllStyles.searchInput}`}
                       type="text"
                       placeholder="ค้นหา ข่าวประชาสัมพันธ์"
                       aria-label="search"
                       onChange={(e) => debouncedSearchChange(e.target.value)}
                     />
                     <button
-                      className="btn btn-primary"
+                      className={`btn btn-primary ${newsAllStyles.searchButton}`}
                       type="button"
                       onClick={() => setPage(1)}
                     >
@@ -148,22 +155,33 @@ function NewsAll() {
                   {news.map((release, index) => (
                     <div
                       className={`${isMobile ? "col-6" : "col-12"} mb-4`}
-                      key={release.id}
+                      key={release.Id}
                     >
                       <div className={`row ${!isMobile ? "" : "text-center"}`}>
                         <div className={`${isMobile ? "col-12" : "col-lg-4"}`}>
                           <a
                             className="d-block"
-                            href={release.pdfPath}
+                            href={release.PdfPath}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => handlePdfClick(release, index)}
                           >
-                            <img
-                              className="img-fluid"
-                              src={release.imagePath}
-                              alt=""
-                            />
+                            {release.ImagePath && (
+                              <Image
+                                className={`img-fluid ${styles.newsImage}`}
+                                src={release.ImagePath}
+                                alt={`ข่าว: ${release.Title}`}
+                                width={400}
+                                height={300}
+                                style={{
+                                  width: '100%',
+                                  height: 'auto',
+                                  objectFit: 'cover'
+                                }}
+                                priority={index < 3}
+                                quality={85}
+                              />
+                            )}
                           </a>
                         </div>
                         <div
@@ -178,12 +196,12 @@ function NewsAll() {
                           >
                             <a
                               className="text-dark"
-                              href={release.pdfPath}
+                              href={release.PdfPath}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={() => handlePdfClick(release, index)}
                             >
-                              {release.title}
+                              {release.Title}
                             </a>
                           </h2>
                           <p
@@ -192,7 +210,7 @@ function NewsAll() {
                               fontSize: !isMobile ? "1.1em" : "inherit", // Larger font on desktop
                             }}
                           >
-                            {release.details}
+                            {release.Details}
                           </p>
                           <p
                             className={`${
@@ -200,16 +218,15 @@ function NewsAll() {
                             }`}
                           >
                             <button
-                              className="btn btn-outline-primary"
+                              className={`btn btn-outline-primary ${styles.readMoreButton}`}
                               style={{
-                                borderRadius: "20px",
                                 padding: !isMobile ? "12px 24px" : "10px 20px",
-                                fontSize: !isMobile ? "0.9em" : "0.8em", // Larger font on desktop
+                                fontSize: !isMobile ? "0.9em" : "0.8em",
                               }}
                               onClick={() => handlePdfClick(release, index)}
-                              disabled={buttonLoading[index]}
+                              disabled={isLoading(index)}
                             >
-                              {buttonLoading[index]
+                              {isLoading(index)
                                 ? "กำลังโหลด..."
                                 : "คลิกเพื่อ อ่านต่อ"}
                             </button>
@@ -225,16 +242,16 @@ function NewsAll() {
                 <div className="col-lg-3 order-lg-2">
                   <div className="mb-4">
                     <h3 className="h4 lined text-uppercase mb-4">ค้นหา</h3>
-                    <div className="input-group mb-3">
+                    <div className={`input-group mb-3 ${newsAllStyles.searchGroup}`}>
                       <input
-                        className="form-control"
+                        className={`form-control ${newsAllStyles.searchInput}`}
                         type="text"
                         placeholder="ค้นหา ข่าวประชาสัมพันธ์"
                         aria-label="search"
                         onChange={(e) => debouncedSearchChange(e.target.value)}
                       />
                       <button
-                        className="btn btn-primary"
+                        className={`btn btn-primary ${newsAllStyles.searchButton}`}
                         type="button"
                         onClick={() => setPage(1)}
                       >
@@ -256,6 +273,7 @@ function NewsAll() {
               </div>
             </div>
           </>
+        )}
       </div>
     </section>
   );

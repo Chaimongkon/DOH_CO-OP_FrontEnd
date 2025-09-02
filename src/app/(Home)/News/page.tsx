@@ -1,98 +1,188 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef, memo } from "react";
 import { News } from "@/types";
 import { RightOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import styles from "./HomeNews.module.css";
-import { useRouter } from "next/navigation";
-import Lottie from "react-lottie";
+import Lottie from 'lottie-react';
 import animationData from "../../loading2.json";
+import Image from "next/image";
+import logger from "@/lib/logger";
+import { useApiConfig } from "@/hooks/useApiConfig";
+import useButtonLoading from "@/hooks/useButtonLoading";
+import useNavigation from "@/hooks/useNavigation";
+import useDateFormatter from "@/hooks/useDateFormatter";
+import useImagePath from "@/hooks/useImagePath";
 
-const NewsPage = () => {
-  const router = useRouter();
+// Simple in-memory cache for news data
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+let newsCache: {
+  data: News[] | null;
+  timestamp: number;
+} = {
+  data: null,
+  timestamp: 0,
+};
+
+interface NewsApiResponse {
+  Id: number;
+  Title: string;
+  Details: string;
+  ImagePath: string | null;
+  PdfPath: string | null;
+  CreateDate: string;
+}
+
+const NewsPage = memo(() => {
   const [news, setNews] = useState<News[]>([]);
+  const [cacheUsed, setCacheUsed] = useState(false);
+  const lastRequestTime = useRef(0);
   const [loading, setLoading] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
+  const { isLoading, withLoading } = useButtonLoading();
+  const { navigateWithMenu } = useNavigation();
+  const { API, URLFile } = useApiConfig();
+
+  // Use date formatter hook
+  const { formatDate } = useDateFormatter({
+    defaultFormat: 'thai-short',
+    useBuddhistEra: true
+  });
+  
+  // Use image path hook
+  const { processImage } = useImagePath({
+    baseUrl: URLFile || '',
+    validateExtension: true,
+    sanitizeUrl: true,
+    enableLogging: true
+  });
+  
+  // Create a version that doesn't validate extensions for PDFs
+  const processFile = useCallback((filePath: string | null) => {
+    return processImage(filePath, { validateExtension: false });
+  }, [processImage]);
 
   // Lottie options
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+  // Lottie props will be passed directly to component
+
+  // Use useRef to store stable references
+  const APIRef = useRef(API);
+  const processImageRef = useRef(processImage);
+  const processFileRef = useRef(processFile);
+  
+  // Update refs when values change
+  APIRef.current = API;
+  processImageRef.current = processImage;
+  processFileRef.current = processFile;
 
   const fetchNews = useCallback(async () => {
     try {
-      const response = await fetch(`${API}/News`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      // Check cache first
+      const now = Date.now();
+      if (newsCache.data && (now - newsCache.timestamp) < CACHE_DURATION) {
+        logger.info('Using cached news data');
+        setNews(newsCache.data);
+        setCacheUsed(true);
+        return;
       }
-      const data = await response.json();
-      const processedData = data.map((newsItem: any) => ({
-        id: newsItem.Id,
-        title: newsItem.Title,
-        details: newsItem.Details,
-        imagePath: newsItem.ImagePath ? `${URLFile}${newsItem.ImagePath}` : "",
-        pdfPath: newsItem.PdfPath ? `${URLFile}${newsItem.PdfPath}` : "",
-        createDate: newsItem.CreateDate,
-      }));
+
+      // Implement request throttling (minimum 3 seconds for 429 prevention)
+      const timeSinceLastRequest = now - lastRequestTime.current;
+      if (timeSinceLastRequest < 3000) {
+        const delay = 3000 - timeSinceLastRequest;
+        logger.info(`Throttling news request, waiting ${delay}ms`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+
+      lastRequestTime.current = Date.now();
+      setCacheUsed(false);
+      
+      const response = await fetch(`${APIRef.current}/News`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
+      
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error("กำลังโหลดข้อมูลข่าวหนักเกินไป กรุณารอสักครู่และลองใหม่อีกครั้ง");
+        }
+        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+      }
+      
+      const response_data = await response.json();
+      
+      // ข้อมูลอยู่ใน response_data.data.data (pagination response)
+      const paginationData = response_data.data || {};
+      const newsItems = paginationData.data || [];
+      
+      const processedData = newsItems.map((newsItem: NewsApiResponse) => {
+        const imageResult = processImageRef.current(newsItem.ImagePath);
+        const pdfResult = processFileRef.current(newsItem.PdfPath);
+        
+        const processedItem = {
+          id: newsItem.Id,
+          title: newsItem.Title,
+          details: newsItem.Details,
+          createDate: newsItem.CreateDate,
+          imagePath: imageResult.url || '',
+          pdfPath: pdfResult.url || '',
+        };
+        
+        return processedItem;
+      });
+      
+      // Cache the result
+      newsCache = {
+        data: processedData,
+        timestamp: Date.now()
+      };
+      
       setNews(processedData);
     } catch (error) {
-      console.error("Failed to fetch news:", error);
+      logger.error("Failed to fetch news:", error);
+      
+      // If we have cached data and it's a network error, use the cache
+      if (newsCache.data && newsCache.data.length > 0) {
+        logger.info('Network error detected, falling back to cached news data');
+        setNews(newsCache.data);
+        setCacheUsed(true);
+      }
     } finally {
       setLoading(false);
     }
-  }, [API, URLFile]);
+  }, []);
 
   useEffect(() => {
     fetchNews();
   }, [fetchNews]);
 
-  const handlePdfClick = async (newsItem: any, index: number) => {
-    if (newsItem.pdfPath) {
-      setButtonLoading((prev) => ({ ...prev, [index]: true }));
-      try {
-        window.open(newsItem.pdfPath, "_blank");
-      } catch (error) {
-        message.error("Failed to open PDF");
-      } finally {
-        setButtonLoading((prev) => ({ ...prev, [index]: false }));
+  const handlePdfClick = useCallback(async (newsItem: News, index: number) => {
+    await withLoading(index, async () => {
+      if (newsItem.pdfPath && newsItem.pdfPath.trim() !== '') {
+        try {
+          window.open(newsItem.pdfPath, "_blank");
+        } catch {
+          message.error("Failed to open PDF");
+        }
+      } else {
+        message.error("PDF not available");
       }
-    } else {
-      message.error("PDF not available");
-    }
-  };
+    })();
+  }, [withLoading]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-      return "Invalid date";
-    }
-
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear() + 543;
-
-    return `${day}/${month}/${year}`;
-  };
-
-  const handleViewAllClick = () => {
-    localStorage.setItem("menuName", "ข่าวประชาสัมพันธ์");
-    router.push("/NewsAll");
-  };
+  const handleViewAllClick = useCallback(() => {
+    navigateWithMenu("/NewsAll", "ข่าวประชาสัมพันธ์");
+  }, [navigateWithMenu]);
   return (
     <section className="py-5">
       <div className="container py-4">
         {loading ? (
           <div className="loading-container">
-            <Lottie options={defaultOptions} height={150} width={150} />
+            <Lottie animationData={animationData} loop={true} autoplay={true} style={{ height: 150, width: 150 }} />
+            <p className="text-center mt-2">
+              {cacheUsed ? 'กำลังโหลดข้อมูลจากแคช...' : 'กำลังโหลดข่าวสาร...'}
+            </p>
           </div>
         ) : (
           <>
@@ -118,21 +208,28 @@ const NewsPage = () => {
             <div className="row gy-5">
               {news.map((newsItem, index) => (
                 <div className="col-lg-22 col-md-6 col-122" key={newsItem.id}>
-                  <div className="product h-100">
+                  <div className={`product h-100 ${styles.newsCard}`}>
                     <div className="box-image">
-                      <div className="mb-4 primary-overlay">
+                      <div className={`mb-4 primary-overlay ${styles.newsOverlay}`}>
                         <button
-                          className="btn btn-outline-light"
+                          className={`btn btn-outline-light ${styles.newsButton}`}
                           onClick={() => handlePdfClick(newsItem, index)}
-                          disabled={buttonLoading[index]}
+                          disabled={isLoading(index)}
                         >
                           {newsItem.imagePath && (
-                            <img
-                              className="img-fluid"
+                            <Image
+                              className={`img-fluid ${styles.newsImage}`}
                               src={newsItem.imagePath}
-                              alt="..."
+                              alt={`ข่าว: ${newsItem.title}`}
                               width={400}
                               height={600}
+                              style={{
+                                width: '100%',
+                                height: 'auto',
+                                objectFit: 'cover'
+                              }}
+                              priority={index < 3}
+                              quality={85}
                             />
                           )}
                           <div className="overlay-content d-flex flex-column justify-content-center p-4">
@@ -162,17 +259,15 @@ const NewsPage = () => {
                         </p>
                         <p className="small text-uppercase text-muted-new">
                           {newsItem.createDate
-                            ? `โพสต์เมื่อวันที่ ${formatDate(
-                                newsItem.createDate
-                              )}`
+                            ? `โพสต์เมื่อวันที่ ${formatDate(newsItem.createDate)}`
                             : "No date available"}
                         </p>
                         <button
-                          className="btn btn-outline-primary"
+                          className={`btn btn-outline-primary ${styles.readMoreButton}`}
                           onClick={() => handlePdfClick(newsItem, index)}
-                          disabled={buttonLoading[index]}
+                          disabled={isLoading(index)}
                         >
-                          {buttonLoading[index]
+                          {isLoading(index)
                             ? "กำลังโหลด..."
                             : "คลิกเพื่อ อ่านต่อ"}
                         </button>
@@ -196,6 +291,8 @@ const NewsPage = () => {
       </div>
     </section>
   );
-};
+});
+
+NewsPage.displayName = 'NewsPage';
 
 export default NewsPage;

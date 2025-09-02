@@ -1,6 +1,7 @@
 // layout/header/MenuItems.tsx
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { logger } from "@/lib/logger";
 export interface SectionType {
   subheader?: string;
   items?: {
@@ -22,23 +23,31 @@ export interface MenuItemType {
   href?: string;
 }
 
+interface ApiStatusItem {
+  Id: number;
+  Status: 0 | 1;
+}
+
+type ApiStatusResponse = ApiStatusItem[];
+
+const ELECTION_STATUS_ID = 5 as const;
 const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const fetchStatus = async (): Promise<boolean> => {
   try {
-    const response = await axios.get(`${API}/StatusHome`);
-    const status = response.data.find(
-      (item: { Id: number }) => item.Id === 5
-    )?.Status;
-    return status === 1;
+    const response = await axios.get<{data: ApiStatusResponse}>(`${API}/StatusHome`);
+    const statusItem = response.data.data?.find(
+      (item: ApiStatusItem) => item.Id === ELECTION_STATUS_ID
+    );
+    return statusItem?.Status === 1;
   } catch (error) {
-    console.error("Failed to fetch status:", error);
+    logger.error("Failed to fetch status", error);
     return false;
   }
 };
 
 const useMenuItems = (): MenuItemType[] => {
-  const [statusHome, setStatusHome] = useState<boolean | null>(null);
+  const [statusHome, setStatusHome] = useState<boolean>(false);
 
   const fetchStatusHome = useCallback(async () => {
     const status = await fetchStatus();
@@ -235,10 +244,6 @@ const useMenuItems = (): MenuItemType[] => {
                   href: "/DepositRetire",
                 },
                 {
-                  title: "เงินฝากประจำ 3 6 12 เดือน",
-                  href: "/TimeDeposit3612",
-                },
-                {
                   title: "เงินฝากประจำ 24 เดือน",
                   href: "/TimeDeposit24",
                 },
@@ -394,7 +399,7 @@ const useMenuItems = (): MenuItemType[] => {
       dropdown: false,
     },
   ];
-  if (statusHome === true) {
+  if (statusHome) {
     MenuItems.push({
       navlabel: false,
       title: "เลือกตั้ง",

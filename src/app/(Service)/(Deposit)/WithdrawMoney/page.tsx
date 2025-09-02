@@ -1,62 +1,48 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { message } from "antd";
-import { Services } from "@/types";
-
-interface Service {
-  urlLinks: string[]; // หรือชนิดข้อมูลอื่นๆ ที่คุณใช้งาน
-  subcategories: string;
-}
+import Image from "next/image";
+import { useServiceData } from "@/hooks/useServiceData";
 
 const WithdrawMoney = () => {
-  const [service, setService] = useState<Services[]>([]);
+  const { service, loading, error } = useServiceData("ถอนเงินผ่านช่องทาง Online");
   const customLabels = ["แบบฟอร์มถอนเงิน", "บันทึกข้อความถอนเงิน"];
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
-  const fetchImages = useCallback(async () => {
-    try {
-      const response = await fetch(`${API}/Serve`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
 
-      const processedData: Services[] = data
-        .map((service: any) => ({
-          id: service.Id,
-          imagePath: service.ImagePath ? `${URLFile}${service.ImagePath}` : "",
-          subcategories: service.Subcategories,
-          urlLinks: service.URLLink
-            ? service.URLLink.split(",").map((link: string) => link.trim())
-            : [], // แยก urlLink เป็นอาร์เรย์
-          status: service.IsActive,
-        }))
-        .filter(
-          (service: Services) =>
-            service.subcategories === "ถอนเงินผ่านช่องทาง Online"
-        );
+  if (loading) {
+    return (
+      <section className="py-5">
+        <div className="container py-4">
+          <center>
+            <div>กำลังโหลดข้อมูล...</div>
+          </center>
+        </div>
+      </section>
+    );
+  }
 
-      setService(processedData);
-    } catch (error) {
-      console.error("Failed to fetch images:", error);
-      message.error("Failed to fetch images.");
-    }
-  }, [API, URLFile]);
-
-  useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
+  if (error) {
+    return (
+      <section className="py-5">
+        <div className="container py-4">
+          <center>
+            <div>เกิดข้อผิดพลาด: {error}</div>
+          </center>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-5">
       {service.map((s) => (
         <div className="container py-4" key={s.id}>
           <center>
-            <img
+            <Image
               className="img-fluid-7"
               src={s.imagePath}
-              alt="Service Image"
+              alt={`Service Image for ${s.subcategories}`}
+              width={800}
+              height={600}
+              priority
             />
           </center>
           {s.urlLinks && s.urlLinks.length > 0 && (

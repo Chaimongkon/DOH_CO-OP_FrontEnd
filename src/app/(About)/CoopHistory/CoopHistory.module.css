@@ -1,0 +1,176 @@
+/* CoopHistory.module.css */
+.section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1140px;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1340px;
+  }
+}
+
+.historyContainer {
+  font-family: 'DOHCOOP', sans-serif;
+}
+
+.header {
+  margin-bottom: 3rem;
+}
+
+.historyTitle {
+  color: var(--bs-gray-800);
+  font-family: 'DOHCOOP', sans-serif;
+  font-weight: bold;
+  border-bottom: 3px solid var(--bs-gray-400);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.historyContent {
+  line-height: 1.8;
+  text-align: justify;
+  color: var(--bs-gray-800);
+}
+
+.indentText {
+  text-indent: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  color: var(--bs-gray-800);
+  font-family: 'DOHCOOP', sans-serif;
+  font-weight: bold;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--bs-gray-400);
+  padding-left: 1rem;
+}
+
+.officersList {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: officer-counter;
+}
+
+.officersList li {
+  counter-increment: officer-counter;
+  margin-bottom: 0.5rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.officersList li::before {
+  content: counter(officer-counter) ".";
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: var(--bs-gray-800);
+  width: 1.5rem;
+}
+
+.boardList {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: board-counter;
+}
+
+.boardList li {
+  counter-increment: board-counter;
+  margin-bottom: 0.5rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.boardList li::before {
+  content: counter(board-counter) ".";
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: var(--bs-gray-800);
+  width: 1.5rem;
+}
+
+.memberGroups {
+  margin-top: 1.5rem;
+}
+
+.memberGroup {
+  margin-bottom: 1rem;
+}
+
+.memberGroupTitle {
+  color: var(--bs-gray-800);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+.responsiveText {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .responsiveText {
+    font-size: 1.1rem;
+  }
+  
+  .historyTitle {
+    font-size: 1.5rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .responsiveText {
+    font-size: 1rem;
+  }
+  
+  .indentText {
+    text-indent: 1.5rem;
+  }
+  
+  .officersList li,
+  .boardList li {
+    padding-left: 1.5rem;
+  }
+}

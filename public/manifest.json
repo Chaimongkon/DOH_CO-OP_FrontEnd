@@ -1,21 +1,43 @@
 {
-    "name": "สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
-    "short_name": "DOH Saving",
-    "description": "สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด ให้บริการเงินฝาก สินเชื่อ และสวัสดิการ",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#ffffff",
-    "icons": [
-      {
-        "src": "/icon-192x192.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "/icon-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ]
-  }
+  "name": "สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด",
+  "short_name": "DOH Saving",
+  "description": "บริการเงินฝาก สินเชื่อ และสวัสดิการสำหรับสมาชิกกรมทางหลวง",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1890ff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "th",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["finance", "business"],
+  "shortcuts": [
+    {
+      "name": "ข่าวสาร",
+      "short_name": "News",
+      "description": "อ่านข่าวสารล่าสุด",
+      "url": "/news",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "บริการ",
+      "short_name": "Services", 
+      "description": "ดูบริการของสหกรณ์",
+      "url": "/services",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

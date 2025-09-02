@@ -1,54 +1,229 @@
+/* Book Container */
 .box-image-text {
     position: relative;
     width: 320px;
     height: 450px;
-    border-radius: 10px;
-    background: #f8f9fa;
-    box-shadow: 0px 20px 20px 5px rgba(0, 0, 0, 0.5);
-    transform: perspective(600px) rotateY(10deg); /* เพิ่มมุมมองสามมิติ */
-    transition: transform 0.3s ease-in-out;
+    margin: 0 auto;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    box-shadow: 
+      20px 20px 60px rgba(0, 0, 0, 0.3),
+      -20px -20px 60px rgba(255, 255, 255, 0.1),
+      inset 5px 5px 10px rgba(0, 0, 0, 0.1);
+    transform: perspective(800px) rotateY(8deg) rotateX(2deg);
+    transition: all 0.4s ease;
     overflow: hidden;
-  }
-  
-  /* สร้างสันหนังสือด้านซ้าย */
-  .box-image-text::before {
+    cursor: pointer;
+}
+
+/* Hover Effect */
+.box-image-text:hover {
+    transform: perspective(800px) rotateY(0deg) rotateX(0deg) scale(1.05);
+    box-shadow: 
+      25px 25px 80px rgba(0, 0, 0, 0.4),
+      -25px -25px 80px rgba(255, 255, 255, 0.2);
+}
+
+/* Book Spine (สันหนังสือหลัก) */
+.box-image-text::before {
     content: "";
     position: absolute;
     top: 0;
-    left: -20px;
-    width: 30px;
+    left: -30px;
+    width: 40px;
     height: 100%;
-    background-color: #d3c4a6; /* สีของสันหนังสือ */
-    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.3); /* เงาของสันหนังสือ */
-    transform: rotateY(-30deg); /* มุมหมุนให้เหมือนสันนูน */
-    z-index: -1;
-  }
-  
-  /* สร้างหน้าในหนังสือด้วยเส้นเล็ก ๆ */
-  .box-image-text::after {
+    background: linear-gradient(
+      90deg, 
+      #654321 0%,
+      #8b4513 20%, 
+      #a0522d 40%, 
+      #cd853f 60%, 
+      #daa520 80%,
+      #f4e4bc 100%
+    );
+    border-radius: 12px 0 0 12px;
+    box-shadow: 
+      -12px 0 20px rgba(0, 0, 0, 0.6),
+      inset 4px 0 10px rgba(0, 0, 0, 0.3),
+      inset -2px 0 6px rgba(255, 255, 255, 0.1);
+    transform: rotateY(-40deg);
+    z-index: -2;
+}
+
+/* Book Container - อัปเดต overflow */
+.box-image-text {
+    overflow: visible !important; /* เปลี่ยนจาก hidden เป็น visible */
+}
+
+.box-image-text::after {
     content: "";
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: calc(100% - 30px);
-    height: calc(100% - 20px);
+    top: 8px;
+    left: -35px;
+    width: 8px;
+    height: calc(100% - 16px);
     background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.6) 10%,
-      rgba(240, 240, 240, 0.9) 11%,
-      rgba(255, 255, 255, 0.6) 12%
+      180deg,
+      #8b4513 0%,
+      #a0522d 25%,
+      #cd853f 50%,
+      #a0522d 75%,
+      #654321 100%
     );
-    background-size: 5px 100%;
-    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2); /* เงาด้านในเพื่อความลึก */
-    border-radius: 8px;
-    z-index: 1;
-  }
-  
-  /* สไตล์ภาพในหน้าปกหนังสือ */
-  .img-fluid {
+    border-radius: 0 0 0 4px;
+    box-shadow: 
+      -3px 0 6px rgba(0, 0, 0, 0.4),
+      inset 1px 0 3px rgba(255, 255, 255, 0.2);
+    transform: rotateY(-45deg);
+    z-index: -1;
+}
+
+/* Book Pages Effect (แยกเป็น class) */
+.book-pages {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: calc(100% - 16px);
+    background: repeating-linear-gradient(
+      180deg,
+      #fff 0px,
+      #fff 2px,
+      #f0f0f0 2px,
+      #f0f0f0 4px
+    );
+    border-radius: 0 8px 8px 0;
+    box-shadow: 
+      -2px 0 4px rgba(0, 0, 0, 0.1),
+      inset 1px 0 2px rgba(0, 0, 0, 0.05);
+    z-index: 2;
+}
+
+/* Book Spine Text/Label */
+.book-spine-label {
+    position: absolute;
+    top: 50%;
+    left: -38px;
+    width: 35px;
+    height: 120px;
+    transform: translateY(-50%) rotateY(-40deg) rotate(-90deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Georgia', serif;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    line-height: 1.2;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* เพิ่ม Book Bands (แถบตกแต่ง) */
+.book-bands {
+    position: absolute;
+    top: 0;
+    left: -32px;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      #daa520 10%,
+      #b8860b 20%,
+      transparent 25%,
+      transparent 75%,
+      #daa520 90%,
+      transparent 100%
+    );
+    box-shadow: 0 0 3px rgba(218, 165, 32, 0.5);
+    transform: rotateY(-40deg);
+    z-index: -1;
+}
+
+/* Book Cover Image */
+.box-image-text .img-fluid {
     height: 100%;
     width: 100%;
-    object-fit: cover; /* ให้ภาพเต็มกรอบโดยไม่เสียอัตราส่วน */
-    border-radius: 10px; /* ขอบมุมมน */
-  }
+    object-fit: cover;
+    border-radius: 12px;
+    position: relative;
+    z-index: 1;
+    filter: contrast(1.1) brightness(0.95);
+    transition: filter 0.3s ease;
+}
+
+.box-image-text:hover .img-fluid {
+    filter: contrast(1.2) brightness(1.05);
+}
+
+/* Book Title Overlay */
+.overlay-content {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: linear-gradient(
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 30%,
+      rgba(0, 0, 0, 0.8) 100%
+    ) !important;
+    color: white !important;
+    padding: 30px 20px 20px !important;
+    border-radius: 0 0 12px 12px !important;
+    z-index: 3 !important;
+}
+
+/* Book Title Styling */
+.box-image-text-heading {
+    font-family: inherit !important;
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
+    line-height: 1.3 !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7) !important;
+    color: white !important;
+    margin-bottom: 15px !important;
+}
+
+/* Download Button */
+.box-image-text .btn {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    border: none !important;
+    border-radius: 25px !important;
+    padding: 8px 20px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: white !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.box-image-text .btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
+    background: linear-gradient(45deg, #20c997, #17a2b8) !important;
+}
+
+/* Additional Book Effects */
+.box-image-text .book-shine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 4;
+}
   

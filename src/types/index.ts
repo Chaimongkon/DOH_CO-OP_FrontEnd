@@ -1,4 +1,7 @@
 // types/index.ts
+
+// Re-export all questions types
+export * from './questions';
 export interface Slide {
   id: number;
   no: number;
@@ -7,12 +10,14 @@ export interface Slide {
   url: string;
 }
 
+// Deprecated: Use NewsItem instead
 export interface News {
   id: number;
   title: string;
   details: string;
   image: string;
   imagePath: string;
+  pdfPath: string;
   pdffile: string;
   File: string;
   filepath: string;
@@ -34,8 +39,8 @@ export interface DownloadForm {
   title: string;
   typeForm: string;
   typeMember: string;
-  pdffile: string;
-  filePath: string;
+  pdffile: string | null;
+  filePath: string | null;
   File: string;
   createDate: string;
 }
@@ -51,18 +56,23 @@ export interface ReportBusiness {
   Title: string;
   createDate: string;
 }
-export interface Services {
+// API Response Type for Services
+export interface ApiServices {
   Id: number;
   Subcategories: string;
   ImagePath: string;
   URLLink: string;
-  createDate: string;
+  IsActive: boolean;
+}
+
+// Frontend Application Type for Services  
+export interface Services {
   id: number;
   imagePath: string;
   subcategories: string;
   urlLink: string;
-  status: string;
   urlLinks: string[];
+  status: boolean;
 }
 
 export interface Application {
@@ -82,5 +92,117 @@ export interface Application {
   applicationMainType: string;
   applicationType: string;
   createDate: string;
-  
 }
+
+// Additional interfaces for better type safety
+export interface ApiResponse<T> {
+  data?: T;
+  message?: string;
+  status?: number;
+  success?: boolean;
+}
+
+// Primary News interface - matches API response format
+export interface NewsItem {
+  Id: number;
+  Title: string;
+  Details: string;
+  ImagePath?: string;
+  PdfPath?: string;
+  CreateDate: string;
+}
+
+export interface ServiceItem {
+  Id: number;
+  Subcategories: string;
+  ImagePath: string;
+  URLLink: string;
+  CreateDate: string;
+}
+
+export interface BoardMember {
+  Id: number;
+  Name: string;
+  Position: string;
+  Type: string;
+  ImagePath?: string;
+  CreateDate: string;
+}
+
+export interface FormItem {
+  Id: number;
+  Title: string;
+  TypeForm: string;
+  FilePath: string;
+  CreateDate: string;
+}
+
+// API response interface for Statute/Regularity/Declare forms
+export interface SRDFormData {
+  Id: number;
+  Title: string;
+  TypeForm: string;
+  TypeMember: string;
+  FilePath: string | null;
+  CreateDate: string;
+}
+
+// API response interface for DownloadForm pages (Appeal, Loan, Membership, etc.)
+export interface FormDownloadResponse {
+  Id: number;
+  Title: string;
+  TypeForm: string;
+  TypeMember: string;
+  FilePath: string | null;
+  CreateDate?: string;
+}
+
+export interface DatabaseQueryResult<T> {
+  rows: T[];
+  metadata: unknown;
+}
+
+export interface ApiError {
+  message: string;
+  code?: string;
+  status?: number;
+}
+
+// Install component specific interfaces
+export interface ImageWithDimensions {
+  src: string;
+  width: number;
+  height: number;
+}
+
+export interface LightboxImage {
+  src: string;
+}
+
+export interface LoadingComponentProps {
+  animationData: unknown;
+}
+
+// Common API response interfaces
+export interface ApiSociety {
+  Id: number;
+  ImagePath: string;
+  SocietyType: string;
+  IsActive: boolean;
+}
+
+export interface PaginatedApiResponse<T> {
+  data: T[];
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+}
+
+// Re-export all types
+export * from './homepage';
+export * from './about';
+export * from './service';
+export * from './home';
+export * from './common';
+export * from './database';
+export * from './api-responses';

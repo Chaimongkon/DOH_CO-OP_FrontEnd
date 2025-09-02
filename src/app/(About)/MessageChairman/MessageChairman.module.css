@@ -1,0 +1,127 @@
+/* MessageChairman.module.css */
+.section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1140px;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1340px;
+  }
+}
+
+.header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.title {
+  color: var(--bs-gray-800);
+  font-family: 'DOHCOOP', sans-serif;
+  font-weight: bold;
+  border-bottom: 3px solid var(--bs-gray-400);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.swiperContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.swiper {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  overflow: hidden;
+}
+
+.slideContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.image {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.2rem;
+  color: var(--bs-gray-600);
+}
+
+/* Swiper pagination customization */
+.swiper :global(.swiper-pagination-bullet) {
+  background: var(--bs-gray-400);
+  opacity: 0.7;
+}
+
+.swiper :global(.swiper-pagination-bullet-active) {
+  background: var(--bs-primary);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .swiper {
+    height: auto;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .swiper {
+    height: auto;
+  }
+  
+  .title {
+    font-size: 1.25rem;
+  }
+}

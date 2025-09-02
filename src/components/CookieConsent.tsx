@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect, useCallback, memo } from "react";
 import Cookies from "js-cookie";
 import styles from "./CookieConsent.module.css";
-import { Button, FloatButton, Modal, Switch, Table } from "antd";
-import { CommentOutlined, CustomerServiceOutlined } from '@ant-design/icons';
+import { Button, Modal, Switch, Table } from "antd";
+import logger from "@/lib/logger";
 
 interface ConsentData {
   userId: string;
@@ -12,6 +11,20 @@ interface ConsentData {
   cookieCategories: string;
   userAgent: string;
   ipAddress: string;
+}
+
+interface IpResponse {
+  ip: string;
+}
+
+interface CookiePreferences {
+  essential: boolean;
+  analytics: boolean;
+  marketing: boolean;
+}
+
+interface WindowWithGtag extends Window {
+  gtag?: (command: string, action: string, parameters: Record<string, string>) => void;
 }
 
 const essentialCookies = [
@@ -28,9 +41,9 @@ const essentialCookies = [
   // เพิ่มคุกกี้พื้นฐานอื่น ๆ ตามต้องการ
 ];
 
-const CookieConsent = () => {
+const CookieConsent: React.FC = memo(function CookieConsent() {
   const [consentGiven, setConsentGiven] = useState<boolean | null>(null);
-  const [cookiePreferences, setCookiePreferences] = useState({
+  const [cookiePreferences, setCookiePreferences] = useState<CookiePreferences>({
     essential: true,
     analytics: false,
     marketing: false,
@@ -43,111 +56,218 @@ const CookieConsent = () => {
     const localConsent = Cookies.get("cookie_consent");
     if (localConsent) {
       setConsentGiven(localConsent === "true");
+      
+      // Load saved preferences if they exist
+      const savedPreferences = Cookies.get("cookie_preferences");
+      if (savedPreferences) {
+        try {
+          const preferences = JSON.parse(savedPreferences);
+          setCookiePreferences(preferences);
+        } catch (error) {
+          logger.error("Error parsing saved cookie preferences", error);
+        }
+      }
     }
   }, []);
 
-  const handleAccept = async () => {
+  const getIpAddress = useCallback(async (): Promise<string> => {
+    try {
+      const response = await fetch("https://api.ipify.org?format=json");
+      if (!response.ok) {
+        throw new Error('Failed to fetch IP address');
+      }
+      const data: IpResponse = await response.json();
+      return data.ip;
+    } catch (error) {
+      logger.error("Error fetching IP address", error);
+      return "unknown";
+    }
+  }, []);
+
+  const manageCookies = useCallback((preferences: CookiePreferences) => {
+    // Save preferences
+    Cookies.set("cookie_preferences", JSON.stringify(preferences), { expires: 365 });
+    
+    // Essential cookies are always enabled (session, security, etc.)
+    // These are handled by the application automatically
+    
+    // Analytics cookies
+    if (preferences.analytics) {
+      // Enable analytics tracking
+      Cookies.set("analytics_enabled", "true", { expires: 365 });
+      
+      // If Google Analytics is used, enable it here
+      if (typeof window !== 'undefined' && (window as WindowWithGtag).gtag) {
+        (window as WindowWithGtag).gtag!('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
+      }
+    } else {
+      // Disable analytics tracking
+      Cookies.remove("analytics_enabled");
+      Cookies.remove("_ga");
+      Cookies.remove("_ga_*");
+      
+      if (typeof window !== 'undefined' && (window as WindowWithGtag).gtag) {
+        (window as WindowWithGtag).gtag!('consent', 'update', {
+          'analytics_storage': 'denied'
+        });
+      }
+    }
+    
+    // Marketing cookies
+    if (preferences.marketing) {
+      // Enable marketing tracking
+      Cookies.set("marketing_enabled", "true", { expires: 365 });
+      
+      if (typeof window !== 'undefined' && (window as WindowWithGtag).gtag) {
+        (window as WindowWithGtag).gtag!('consent', 'update', {
+          'ad_storage': 'granted'
+        });
+      }
+    } else {
+      // Disable marketing tracking
+      Cookies.remove("marketing_enabled");
+      
+      // Remove common marketing cookies
+      Cookies.remove("_fbp");
+      Cookies.remove("_fbc");
+      
+      if (typeof window !== 'undefined' && (window as WindowWithGtag).gtag) {
+        (window as WindowWithGtag).gtag!('consent', 'update', {
+          'ad_storage': 'denied'
+        });
+      }
+    }
+  }, []);
+
+  const sendConsentData = useCallback(async (categories: string, preferences: CookiePreferences) => {
     try {
       const userId = Cookies.get("user_id") || "anonymous";
       const userAgent = navigator.userAgent;
       const ipAddress = await getIpAddress();
       const consentDate = new Date().toISOString();
-      const selectedCategories = "essential, analytics, marketing";
 
       const consentData: ConsentData = {
         userId,
         consentStatus: true,
         consentDate,
-        cookieCategories: selectedCategories,
+        cookieCategories: categories,
         userAgent,
         ipAddress,
       };
 
-      const response = await axios.post(`${API}/Cookie`, consentData);
-      console.log("Consent data sent:", response.data);
+      const response = await fetch(`${API}/Cookie`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(consentData),
+      });
 
+      if (!response.ok) {
+        throw new Error('Failed to send consent data');
+      }
+
+      const data = await response.json();
+      logger.info("Consent data sent", { data });
+
+      // Set consent status
       Cookies.set("cookie_consent", "true", { expires: 365 });
+      
+      // Apply cookie preferences
+      manageCookies(preferences);
+      
       setConsentGiven(true);
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Error sending consent data:", error);
+      logger.error("Error sending consent data", error);
     }
-  };
+  }, [API, getIpAddress, manageCookies]);
 
-  const handleDecline = () => {
+  const removeNonEssentialCookies = useCallback(() => {
+    // Remove analytics cookies
+    Cookies.remove("analytics_enabled");
+    Cookies.remove("_ga");
+    Cookies.remove("_ga_*");
+    
+    // Remove marketing cookies
+    Cookies.remove("marketing_enabled");
+    Cookies.remove("_fbp");
+    Cookies.remove("_fbc");
+    
+    // Remove other non-essential cookies as needed
+    // Add more cookie names that should be removed when declined
+    
+    logger.info("Non-essential cookies removed");
+  }, []);
+
+  const handleAccept = useCallback(async () => {
+    const allAcceptedPreferences: CookiePreferences = {
+      essential: true,
+      analytics: true,
+      marketing: true,
+    };
+    setCookiePreferences(allAcceptedPreferences);
+    await sendConsentData("essential, analytics, marketing", allAcceptedPreferences);
+  }, [sendConsentData]);
+
+  const handleDecline = useCallback(() => {
+    const essentialOnlyPreferences: CookiePreferences = {
+      essential: true,
+      analytics: false,
+      marketing: false,
+    };
+    
+    // Set consent status
     Cookies.set("cookie_consent", "false", { expires: 365 });
+    
+    // Apply essential-only cookie preferences
+    manageCookies(essentialOnlyPreferences);
+    setCookiePreferences(essentialOnlyPreferences);
+    
+    // Remove non-essential cookies
+    removeNonEssentialCookies();
+    
     setConsentGiven(false);
     setIsModalOpen(false);
-  };
+  }, [manageCookies, removeNonEssentialCookies]);
 
-  const handleTogglePreference = (category: keyof typeof cookiePreferences) => {
+  const handleTogglePreference = useCallback((category: keyof CookiePreferences) => {
     setCookiePreferences((prev) => ({
       ...prev,
       [category]: !prev[category],
     }));
-  };
+  }, []);
 
-  const getIpAddress = async (): Promise<string> => {
-    try {
-      const response = await axios.get("https://api.ipify.org?format=json");
-      return response.data.ip;
-    } catch (error) {
-      console.error("Error fetching IP address:", error);
-      return "unknown";
-    }
-  };
-
-  const CookieSetting = () => {
+  const CookieSetting = useCallback(() => {
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleOk = async () => {
-    try {
-      const userId = Cookies.get("user_id") || "anonymous";
-      const userAgent = navigator.userAgent;
-      const ipAddress = await getIpAddress();
-      const consentDate = new Date().toISOString();
-      const selectedCategories = Object.keys(cookiePreferences)
-        .filter(
-          (key) => cookiePreferences[key as keyof typeof cookiePreferences]
-        )
-        .join(", ");
+  const handleOk = useCallback(async () => {
+    const selectedCategories = Object.keys(cookiePreferences)
+      .filter(
+        (key) => cookiePreferences[key as keyof CookiePreferences]
+      )
+      .join(", ");
+    await sendConsentData(selectedCategories, cookiePreferences);
+  }, [cookiePreferences, sendConsentData]);
 
-      const consentData: ConsentData = {
-        userId,
-        consentStatus: true,
-        consentDate,
-        cookieCategories: selectedCategories,
-        userAgent,
-        ipAddress,
-      };
-
-      const response = await axios.post(`${API}/Cookie`, consentData);
-      console.log("Consent data sent:", response.data);
-
-      Cookies.set("cookie_consent", "true", { expires: 365 });
-      setConsentGiven(true);
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error sending consent data:", error);
-    }
-  };
-
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setIsModalOpen(false);
-  };
+  }, []);
 
-  const showDetailsModal = () => {
+  const showDetailsModal = useCallback(() => {
     setIsDetailsModalOpen(true);
-  };
+  }, []);
 
-  const handleDetailsOk = () => {
+  const handleDetailsOk = useCallback(() => {
     setIsDetailsModalOpen(false);
-  };
+  }, []);
 
-  const handleDetailsCancel = () => {
+  const handleDetailsCancel = useCallback(() => {
     setIsDetailsModalOpen(false);
-  };
+  }, []);
 
   const columns = [
     {
@@ -277,6 +397,6 @@ const CookieConsent = () => {
     </div>
     
   );
-};
+});
 
 export default CookieConsent;

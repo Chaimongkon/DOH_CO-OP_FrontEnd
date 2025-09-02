@@ -1,14 +1,13 @@
 import React, { useContext } from "react";
 import styles from "./HomeEle.module.css";
-import Link from "next/link";
-import { Button, ConfigProvider, Space } from "antd";
+import { Button, ConfigProvider } from "antd";
 import { AntDesignOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
-import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@mui/material";
+import useNavigation from "@/hooks/useNavigation";
 
 const HomeApplication = () => {
-  const router = useRouter();
+  const { navigateWithMenu } = useNavigation();
   const isMobile = useMediaQuery("(max-width:768px)");
   const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
   const rootPrefixCls = getPrefixCls();
@@ -39,8 +38,7 @@ const HomeApplication = () => {
     }
   `;
   const handleViewAllClick = () => {
-    localStorage.setItem("menuName", "ตรวจสอบผู้มีสิทธิเลือกตั้ง");
-    router.push("/Election");
+    navigateWithMenu("/Election", "ตรวจสอบผู้มีสิทธิเลือกตั้ง");
   };
 
   return (

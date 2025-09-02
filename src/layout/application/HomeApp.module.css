@@ -1,5 +1,5 @@
 .ApplicationHome {
-    position: absolute;
+    position: relative !important;
     width: 100%;
     max-width: 1600px;
     padding: 30px 40px;
@@ -8,6 +8,9 @@
     transform: translateX(-50%);
     background: url('/image/applicationBackground.png') center center repeat;
     border-radius: 100px; /* Rounds the corners to give a capsule shape */
+    z-index: 99999 !important; /* Force high z-index */
+    pointer-events: auto !important;
+    isolation: auto !important;
   }
   
   .buttoncontainer {

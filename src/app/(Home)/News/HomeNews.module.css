@@ -2,11 +2,20 @@
 .customButton {
     color: #ff6347; /* Change this to your desired color */
     font-family: 'DOHCOOP', sans-serif;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    
   }
   
   .customButton:hover {
-    color: #e55337; /* Change this to your desired hover color */
+    color: #ff009d; /* Change this to your desired hover color */
     font-family: 'DOHCOOP', sans-serif;
+    border-radius: 12px;
+    background-color: rgba(255, 99, 71, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 99, 71, 0.2);
+    border-radius: 12px;
   }
   
   .loadingCenter {
@@ -16,4 +25,29 @@
     height: 400px; /* Adjust as needed to match your image size */
     width: 100%;
   }
-  
+
+  /* News Image Styling - เฉพาะขอบมน */
+  .newsImage {
+    border-radius: 12px 12px 0 0; /* ขอบมนเฉพาะด้านบน */
+  }
+
+  /* Overlay Styling - ขอบมน */
+  .newsOverlay {
+    border-radius: 12px 12px 0 0; /* ขอบมนเฉพาะด้านบน */
+  }
+
+  /* Button และ hover state - ขอบมน */
+  .newsButton {
+    border-radius: 12px 12px 0 0; /* ขอบมนเฉพาะด้านบน */
+    overflow: hidden;
+  }
+
+  /* Read More Button - ขอบมน */
+  .readMoreButton {
+    border-radius: 8px;
+
+  }
+
+
+
+

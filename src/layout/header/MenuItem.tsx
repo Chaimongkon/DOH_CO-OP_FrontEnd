@@ -8,12 +8,14 @@ interface MenuItemProps {
   onClick?: () => void;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ title, href, className, onClick }) => (
+const MenuItem: React.FC<MenuItemProps> = React.memo(({ title, href, className, onClick }) => (
   <li className="nav-item">
-    <Link href={href} legacyBehavior>
-      <a className={className} onClick={onClick}>{title}</a>
+    <Link href={href} className={className} onClick={onClick}>
+      {title}
     </Link>
   </li>
-);
+));
+
+MenuItem.displayName = 'MenuItem';
 
 export default MenuItem;

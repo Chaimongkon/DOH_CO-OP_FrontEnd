@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import useMenuItems, {
   MenuItemType,
   SectionType,
@@ -47,22 +48,23 @@ function Header({ setMenuName }: HeaderProps) {
           id="navbar"
         >
           <div className="container py-3 py-lg-0 px-lg-0">
-            <Link href="/" legacyBehavior>
-              <a
-                className="navbar-brand"
-                onClick={() => handleMenuClick("Home")}
-              >
-                <img
-                  className="d-none d-md-inline-block"
-                  src="/image/logo.png"
-                  alt="Universal logo"
-                />
-                <img
-                  className="d-inline-block d-md-none"
-                  src="/image/logo-small.png"
-                  alt="Universal logo"
-                />
-              </a>
+            <Link href="/" className="navbar-brand" onClick={() => handleMenuClick("Home")}>
+              <Image
+                className="d-none d-md-inline-block"
+                src="/image/logo.png"
+                alt="DOH Cooperative logo"
+                width={300}
+                height={60}
+                priority
+              />
+              <Image
+                className="d-inline-block d-md-none"
+                src="/image/logo-small.png"
+                alt="DOH Cooperative logo small"
+                width={120}
+                height={60}
+                priority
+              />
             </Link>
             <button
               className="navbar-toggler text-warning border-warning collapsed"
@@ -71,7 +73,7 @@ function Header({ setMenuName }: HeaderProps) {
               data-bs-target="#navigationCollapse"
               aria-controls="navigationCollapse"
               aria-expanded="false"
-              aria-label="Toggle navigation"
+              aria-label="เปิด/ปิดเมนูนำทาง"
             >
               <span className="sr-only">Toggle navigation</span>
               <i className="fas fa-align-justify"></i>
@@ -89,11 +91,12 @@ function Header({ setMenuName }: HeaderProps) {
                     <li key={index} className="nav-item dropdown menu-large">
                       <a
                         className="nav-link dropdown-toggle"
-                        id="featuresMegamenu"
+                        id={`dropdown-${index}`}
                         href="#"
                         role="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
+                        aria-label={`เปิดเมนู ${item.title}`}
                       >
                         {item.title}
                       </a>
@@ -102,7 +105,8 @@ function Header({ setMenuName }: HeaderProps) {
                         style={{
                           width: `${(item.columns?.length || 0) * 420}px`,
                         }}
-                        aria-labelledby="featuresMegamenu"
+                        aria-labelledby={`dropdown-${index}`}
+                        role="menu"
                       >
                         <li>
                           <div className="row">
@@ -129,17 +133,19 @@ function Header({ setMenuName }: HeaderProps) {
                                       <div key={secIndex}>
                                         {section.imageSrc && (
                                           <div className="col-lg-12">
-                                            <img
+                                            <Image
                                               className={`img-fluid d-none d-lg-block ${styles.customImgSize}`}
                                               src={section.imageSrc}
-                                              alt=""
+                                              alt={`Menu section image for ${section.subheader || 'navigation'}`}
+                                              width={200}
+                                              height={150}
                                               style={
                                                 colIndex === 0
                                                   ? {
                                                       width: "100%",
-                                                      height: "100%",
+                                                      height: "auto",
                                                     }
-                                                  : {}
+                                                  : { width: "100%", height: "auto" }
                                               }
                                             />
                                           </div>

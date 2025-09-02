@@ -1,19 +1,23 @@
 "use client";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Button, ConfigProvider, Modal, Space } from "antd";
+import { Button, ConfigProvider, Modal } from "antd";
 import Link from "next/link";
-import { base64ToBlobUrl } from "@/utils/base64ToBlobUrl";
 import { createStyles, useTheme } from "antd-style";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
+import Image from "next/image";
+import logger from "@/lib/logger";
+import { SectionLoading } from "@/components/loading";
+import { useApiConfig } from "@/hooks/useApiConfig";
+import { DialogBoxApiResponse } from "@/types/home";
 
-interface Notifi {
+interface DialogBoxData {
   id: number;
-  image: string;
   imagePath: string;
   url: string;
-  status: boolean;
+  isActive: boolean;
 }
+
 const useStyle = createStyles(({ token }) => ({
   "my-modal-body": {
     background: token.blue1,
@@ -34,11 +38,11 @@ const useStyle = createStyles(({ token }) => ({
 }));
 
 const DialogBoxes: React.FC = () => {
-  const [notifi, setNotifi] = useState<Notifi[]>([]);
+  const [dialogBoxes, setDialogBoxes] = useState<DialogBoxData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { styles } = useStyle();
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const URLFile = process.env.NEXT_PUBLIC_PICHER_BASE_URL;
+  const { API, URLFile } = useApiConfig();
   const token = useTheme();
   const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
   const rootPrefixCls = getPrefixCls();
@@ -89,58 +93,69 @@ const DialogBoxes: React.FC = () => {
       padding: "10px 10px", 
     },
   };
-  const fetchImages = useCallback(async () => {
+  const fetchDialogBoxes = useCallback(async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(`${API}/DialogBoxs`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      const data = await response.json();
+      const apiResponse = await response.json();
+      
+      // Extract data array from response
+      const data = apiResponse.data || apiResponse || [];
 
-      // Assuming the image data is base64 encoded
-      const processedData: Notifi[] = data.map((notify: any) => ({
-        id: notify.Id,
-        // image: base64ToBlobUrl(notify.Image, "image/webp"),
-        imagePath: notify.ImagePath ? `${URLFile}${notify.ImagePath}` : "",
-        url: notify.URLLink,
-        status: notify.IsActive,
-      }));
+      // Process the dialog box data - only active ones
+      const activeDialogBoxes: DialogBoxData[] = data
+        .filter((notify: DialogBoxApiResponse) => notify.IsActive && notify.ImagePath)
+        .map((notify: DialogBoxApiResponse) => ({
+          id: notify.Id,
+          imagePath: `${URLFile}${notify.ImagePath}`,
+          url: notify.URLLink || '#',
+          isActive: notify.IsActive,
+        }));
 
-      setNotifi(processedData);
+      setDialogBoxes(activeDialogBoxes);
 
-      // Check for active notifications
-      const hasActiveNotifications = processedData.some(
-        (notify) => notify.status
-      );
-      if (hasActiveNotifications) {
+      // Show modal if there are active dialog boxes
+      if (activeDialogBoxes.length > 0) {
         setIsModalOpen(true);
       }
     } catch (error) {
-      console.error("Failed to fetch images:", error);
+      logger.error("Failed to fetch DialogBoxes data:", error);
+      setDialogBoxes([]);
+    } finally {
+      setIsLoading(false);
     }
-  }, [API]);
+  }, [API, URLFile]);
 
-  const showModal = () => {
+  const closeModal = () => {
     setIsModalOpen(false);
   };
 
   useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
+    fetchDialogBoxes();
+  }, [fetchDialogBoxes]);
 
-  const dialog = notifi.filter((notify) => notify.status);
+  // All dialog boxes are already filtered to active ones
+
+  // Show loading state while fetching data
+  if (isLoading) {
+    return <SectionLoading tip="Loading dialog boxes..." />;
+  }
 
   return (
     <>
       <Modal
         title=""
         open={isModalOpen}
-        onOk={showModal}
-        onCancel={showModal}
+        onOk={closeModal}
+        onCancel={closeModal}
+        destroyOnClose
         classNames={classNames}
         styles={modalStyles}
         width={700}
-        footer={(_) => (
+        footer={() => (
           <center>
             <ConfigProvider
               button={{
@@ -151,7 +166,7 @@ const DialogBoxes: React.FC = () => {
                 type="primary"
                 size="large"
                 icon={<CloseCircleOutlined />}
-                onClick={showModal}
+                onClick={closeModal}
               >
                 ปิด
               </Button>
@@ -159,24 +174,35 @@ const DialogBoxes: React.FC = () => {
           </center>
         )}
       >
-        {dialog.map((dialog) => (
-          <div key={dialog.id}>
-            <Link href={dialog.url}>
-              <img
-                className="img-fluid"
-                src={dialog.imagePath}
-                alt="Notification Image"
+        {dialogBoxes.map((dialogBox) => (
+          <div key={dialogBox.id} style={{ marginBottom: '16px' }}>
+            <Link href={dialogBox.url} target={dialogBox.url !== '#' ? '_blank' : '_self'}>
+              <Image
+                src={dialogBox.imagePath}
+                alt={`Dialog Box ${dialogBox.id}`}
+                width={700}
+                height={400}
+                style={{ 
+                  width: '100%', 
+                  height: 'auto',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+                priority={dialogBox.id === dialogBoxes[0]?.id}
               />
             </Link>
           </div>
         ))}
       </Modal>
-      <ConfigProvider
-        modal={{
-          classNames,
-          styles: modalStyles,
-        }}
-      ></ConfigProvider>
+      {/* Only render when there are dialog boxes to show */}
+      {dialogBoxes.length === 0 && (
+        <ConfigProvider
+          modal={{
+            classNames,
+            styles: modalStyles,
+          }}
+        />
+      )}
     </>
   );
 };

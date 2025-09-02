@@ -1,16 +1,15 @@
 // app/layout.tsx
-"use client";
 import { Inter } from "next/font/google";
-import { ReactNode, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
 import "./globals.css";
+import "@/utils/console-override"; // Override console to filter warnings
 import TopHeader from "@/layout/topheader/TopHeader";
 import ClientWrapper from "@/components/ClientWrapper";
 import VisitsCount from "@/components/VisitsCount";
 import Footer from "@/layout/footer/Footer";
-import SnowParticles from "@/components/SnowParticles";
-import Snowflake from "@/components/Snowflake";
-import Head from "next/head";
+import SnowManager from "@/components/SnowManager";
+import FireworksManager from "@/components/FireworksManager";
+import { StatusHomeProvider } from "@/lib/context/StatusHomeContext";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -22,28 +21,6 @@ const inter = Inter({
 });
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  const pathname = usePathname();
-  const [isSnow, setIsSnow] = useState(false);
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const response = await fetch(`${API}/StatusHome`);
-        const data = await response.json();
-        const statusCode = data.some(
-          (item: { Id: number; Status: number }) =>
-            item.Id === 3 && item.Status === 1
-        );
-        setIsSnow(statusCode);
-      } catch (error) {
-        console.error("Failed to fetch status:", error);
-      }
-    };
-
-    fetchStatus();
-  }, [API]);
-
   return (
     <html lang="th">
       <head>
@@ -81,19 +58,19 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#ffffff" />
         
-        {/* External Resources - Optimized Loading */}
-        <link
-          rel="preload"
-          href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-          as="style"
-        />
+        {/* External Resources - FontAwesome */}
         <link
           rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
           crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
         />
-        <link rel="stylesheet" href="/css/swiper-bundle.min.css" />
+        {/* Swiper CSS */}
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+        />
         
         {/* Structured Data - JSON-LD */}
         <script
@@ -123,14 +100,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
       </head>
       <body className={inter.className}>
-        <TopHeader className="top-header" />
-        <VisitsCount />
-
-        {isSnow && <Snowflake />}
-        {pathname !== "/" && <SnowParticles />}
-
-        <ClientWrapper>{children}</ClientWrapper>
-        <Footer className="footer-top" />
+        <StatusHomeProvider>
+          <TopHeader />
+          <VisitsCount />
+          <SnowManager />
+          <FireworksManager />
+          <ClientWrapper>{children}</ClientWrapper>
+          <Footer />
+        </StatusHomeProvider>
         <script
           src="/vendor/bootstrap/js/bootstrap.bundle.min.js"
           defer

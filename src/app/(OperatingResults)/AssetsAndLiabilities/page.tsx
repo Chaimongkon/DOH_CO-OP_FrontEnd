@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useContext } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { base64ToBlobUrl } from "@/utils/base64ToBlobUrl";
-import { Button, ConfigProvider, Space } from "antd";
-import { AntDesignOutlined } from "@ant-design/icons";
-import { css } from "@emotion/css";
+import Image from "next/image";
+import Lottie from 'lottie-react';
+import animationData from "../../loading2.json";
+import logger from "@/lib/logger";
+import styles from './AssetsAndLiabilities.module.css';
 interface Asset {
   Id: number;
   PdfFile: string;
@@ -20,35 +22,12 @@ const AssetsAndLiabilities = () => {
   const [year, setYear] = useState<string>("");
   const [assets, setAssets] = useState<Asset[]>([]);
   const [allyear, setAllYear] = useState<YearData[]>([]);
+  const [loading, setLoading] = useState(true);
   const API = process.env.NEXT_PUBLIC_API_BASE_URL as string;
-  const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
-  const rootPrefixCls = getPrefixCls();
-  const linearGradientButton = css`
-    &.${rootPrefixCls}-btn-primary:not([disabled]):not(
-        .${rootPrefixCls}-btn-dangerous
-      ) {
-      border-width: 0;
-      background: linear-gradient(135deg, #e65c00, #f9d423);
-      transition: background 0.3s;
-      position: relative;
-      overflow: hidden;
-
-      > span {
-        position: relative;
-      }
-
-      &:hover {
-        background: linear-gradient(
-          135deg,
-          #f12711,
-          #f5af19
-        ); /* Change to your desired hover gradient */
-      }
-    }
-  `;
 
   const fetchAllYears = useCallback(async () => {
     try {
+      setLoading(true);
       const res = await fetch(`${API}/AssetsLiabilities`);
       const data = await res.json();
       setAllYear(data.data);
@@ -56,7 +35,9 @@ const AssetsAndLiabilities = () => {
         setYear(data.data[0].Year);
       }
     } catch (error) {
-      console.error("Failed to fetch years:", error);
+      logger.error("Failed to fetch years:", error);
+    } finally {
+      setLoading(false);
     }
   }, [API]);
 
@@ -67,7 +48,7 @@ const AssetsAndLiabilities = () => {
         const data = await res.json();
         setAssets(data.data);
       } catch (error) {
-        console.error("Failed to fetch assets:", error);
+        logger.error("Failed to fetch assets:", error);
       }
     },
     [API]
@@ -97,75 +78,95 @@ const AssetsAndLiabilities = () => {
     [assets, year]
   );
 
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}>
+          <Lottie animationData={animationData} loop={true} autoplay={true} />
+        </div>
+        <p>กำลังโหลดข้อมูล...</p>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <section className="py-5">
-        <div className="container">
-          <div className="row g-5">
-            <div className="col-lg-3">
-              <h3 className="h3 text-uppercase lined mb-4">รายงานทางการเงิน</h3>
-              <br />
-              {uniqueYears.map((yearItem) => (
-                <nav
-                  className="nav flex-column nav-pills text-sm"
-                  key={yearItem}
-                >
-                  <ConfigProvider
-                    button={{
-                      className: linearGradientButton,
-                    }}
-                  >
-                    <Button
-                      style={{ fontFamily: "DOHCOOP" }}
-                      type="primary"
-                      size="large"
-                      icon={<AntDesignOutlined />}
-                      onClick={() => handleYearClick(yearItem)}
-                    >
-                      ประจำปี {yearItem}
-                    </Button>
-                  </ConfigProvider>
-                  <br />
-                </nav>
-              ))}
-            </div>
-            <div className="col-lg-9">
-              <h2 className="h3 lined text-uppercase mb-4">ปี {year}</h2>
-              <br />
-              <div className="row gy-4">
+    <section className="py-5">
+      <div className={styles.container}>
+        {/* Header Section */}
+        <div className={styles.headerSection}>
+          <h1 className={styles.mainTitle}>รายงานทางการเงิน</h1>
+          <p className={styles.subtitle}>ข้อมูลสินทรัพย์และหนี้สิน สหกรณ์ออมทรัพย์กรมทางหลวง จำกัด</p>
+        </div>
+
+        {/* Year Selector */}
+        <div className={styles.yearSection}>
+          <h2 className={styles.yearTitle}>เลือกปี</h2>
+          <div className={styles.yearButtons}>
+            {uniqueYears.map((yearItem) => (
+              <button
+                key={yearItem}
+                className={`${styles.yearButton} ${year === yearItem ? styles.yearButtonActive : ''}`}
+                onClick={() => handleYearClick(yearItem)}
+              >
+                <i className="fas fa-calendar-alt me-2"></i>
+                ประจำปี {yearItem}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Assets Section */}
+        {year && (
+          <div className={styles.assetsSection}>
+            <h2 className={styles.sectionTitle}>รายงานประจำปี {year}</h2>
+            
+            {filteredAssets.length > 0 ? (
+              <div className={styles.assetsGrid}>
                 {filteredAssets.map((asset) => (
-                  <div className="col-md-3 col-sm-6 text-center" key={asset.Id}>
-                    <a
-                       href={base64ToBlobUrl(asset.PdfFile, 'application/pdf')}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <div className="icon icon-outlined icon-thin block-icon-hover mx-auto mb-3">
-                        <img
-                          className="icon icon-outlined icon-thin mx-auto mb-3 avatar p-1"
+                  <div key={asset.Id} className={styles.assetCard}>
+                    <div className={styles.assetIconContainer}>
+                      <div className={styles.assetIcon}>
+                        <Image
                           src="/image/logo/pdf.png"
-                          alt="PDF Icon"
+                          alt={`PDF document for ${asset.TitleMonth}`}
+                          width={80}
+                          height={80}
+                          unoptimized
                         />
                       </div>
+                    </div>
+                    
+                    <h3 className={styles.assetTitle}>{asset.TitleMonth}</h3>
+                    <div className={styles.assetMeta}>ปี {asset.Year}</div>
+                    
+                    <a
+                      href={base64ToBlobUrl(asset.PdfFile, 'application/pdf')}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.downloadButton}
+                    >
+                      <i className="fas fa-download"></i>
+                      เปิดเอกสาร
                     </a>
-                    <h4 className="text-uppercase mb-3">
-                      <a
-                        className="text-reset"
-                        href={base64ToBlobUrl(asset.PdfFile, 'application/pdf')}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {asset.TitleMonth}
-                      </a>
-                    </h4>
                   </div>
                 ))}
               </div>
-            </div>
+            ) : (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                  </svg>
+                </div>
+                <h3 className={styles.emptyTitle}>ไม่พบข้อมูล</h3>
+                <p className={styles.emptyMessage}>ยังไม่มีรายงานสำหรับปี {year}</p>
+              </div>
+            )}
           </div>
-        </div>
-      </section>
-    </>
+        )}
+      </div>
+    </section>
   );
 };
 

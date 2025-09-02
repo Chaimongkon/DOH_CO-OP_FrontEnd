@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Modal, ModalClose, Sheet } from "@mui/joy";
+import Image from "next/image";
+import logger from "@/lib/logger";
+import { useApiConfig } from "@/hooks/useApiConfig";
 
 interface Video {
   id: number;
@@ -13,7 +16,7 @@ const ElectionVideos = () => {
   const [electionVideos, setElectionVideos] = useState<Video[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [open, setOpen] = useState(false);
-  const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const { API } = useApiConfig();
 
   const getYouTubeVideoId = useMemo(
     () => (url: string) => {
@@ -38,16 +41,16 @@ const ElectionVideos = () => {
       }
       const data = await response.json();
 
-      const processedData: Video[] = data.map((video: any) => ({
-        id: video.Id,
-        title: video.Title,
-        youTubeUrl: video.YouTubeUrl,
-        details: video.Details,
+      const processedData: Video[] = data.map((video: {Id: number; Title: string; YouTubeUrl: string; Details: string}) => ({
+        id: video.Id as number,
+        title: video.Title as string,
+        youTubeUrl: video.YouTubeUrl as string,
+        details: video.Details as string,
       }));
 
       setElectionVideos(processedData);
     } catch (error) {
-      console.error("Failed to fetch videos:", error);
+      logger.error("Failed to fetch videos:", error);
     }
   }, [API]);
 
@@ -76,19 +79,21 @@ const ElectionVideos = () => {
                 {/* Product */}
                 <div className="product h-100">
                   <div className="product-image">
-                    <img
+                    <Image
                       src={`https://img.youtube.com/vi/${getYouTubeVideoId(
                         video.youTubeUrl
                       )}/hqdefault.jpg`}
-                      loading="lazy"
-                      alt=""
+                      alt={`Video thumbnail for ${video.title}`}
+                      width={358}
+                      height={201}
                       style={{
-                        width: "100%",
-                        height: "auto", // Maintain aspect ratio
+                        width: "auto",
+                        height: "auto",
+                        maxWidth: "100%",
                         cursor: "pointer",
-                        maxWidth: "358px",
                       }}
                       onClick={() => showModal(video)}
+                      priority={index < 3}
                     />
                   </div>
                   <div className="py-4 px-3 text-center">

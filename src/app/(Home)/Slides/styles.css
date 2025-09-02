@@ -1,28 +1,54 @@
-/* body {
+/* Specific styles for slides swiper only */
+.mySwiper {
+  width: 100%;
+  max-width: 1304px;
+  height: 535px;
   position: relative;
-  height: 100%;
+  margin: 0 auto;
+  z-index: 1; /* Lower than ApplicationHome */
 }
 
-body {
-  background: #eee;
-  font-size: 14px;
-  color: #000;
-  margin: 0;
-  padding: 0;
-} */
-
-.swiper {
-  width: 1304;
-  height: 535;
-  position: absolute;
+.swiper.mySwiper {
+  width: 100%;
+  max-width: 1304px;
+  height: 535px;
+  position: relative;
+  margin: 0 auto;
+  z-index: 1; /* Lower than ApplicationHome */
 }
 
-.swiper-slide {
+/* Only apply to slides swiper */
+.mySwiper .swiper-slide {
   background-position: center;
   background-size: cover;
 }
 
-.swiper-slide img {
+.mySwiper .swiper-slide img {
   display: block;
   width: 100%;
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+/* Responsive adjustments for slides only */
+@media (max-width: 1320px) {
+  .mySwiper,
+  .swiper.mySwiper {
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mySwiper,
+  .swiper.mySwiper {
+    height: 300px;
+  }
+}
+
+/* Ensure ClientSections Swiper is not affected */
+.swiper:not(.mySwiper) {
+  height: auto !important;
+  position: static !important;
+  margin: inherit !important;
 }

@@ -1,4 +1,5 @@
 import AppDetails from "@/app/(Home)/AppDetails/page";
+import Image from "next/image";
 import React from "react";
 function MobileApp() {
   return (
@@ -20,7 +21,14 @@ function MobileApp() {
           <div className="col-lg-12">
             {/* Portfolio item*/}
             <div className="box-image-text text-center ">
-              <img className="img-fluid" src="image/download app.png" alt="..." />
+              <Image 
+                className="img-fluid" 
+                src="/image/download app.png" 
+                alt="DohSaving mobile app download banner"
+                width={800}
+                height={600}
+                style={{ width: "100%", height: "auto" }}
+              />
             </div>
           </div>
         </div>
@@ -40,10 +48,12 @@ function MobileApp() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img
+                <Image
                   className="avatar avatar-xxl p-2 mb-4"
-                  src="image/logo/ios2024.png"
-                  alt="Princess Leia"
+                  src="/image/logo/ios2024.png"
+                  alt="Download DohSaving app from iOS App Store"
+                  width={120}
+                  height={120}
                 />
               </a>
               <h3 className="h4 mb-1 text-uppercase">
@@ -63,10 +73,12 @@ function MobileApp() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img
+                <Image
                   className="avatar avatar-xxl p-2 mb-4"
-                  src="image/logo/Android2.png"
-                  alt="Princess Leia"
+                  src="/image/logo/Android2.png"
+                  alt="Download DohSaving app from Google Play Store"
+                  width={120}
+                  height={120}
                 />
               </a>
               <h3 className="h4 mb-1 text-uppercase">
@@ -87,10 +99,12 @@ function MobileApp() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img
+                <Image
                   className="avatar avatar-xxl p-2 mb-4"
-                  src="image/logo/huawei.png"
-                  alt="Princess Leia"
+                  src="/image/logo/huawei.png"
+                  alt="Download DohSaving app from Huawei App Gallery"
+                  width={120}
+                  height={120}
                 />
               </a>
               <h3 className="h4 mb-1 text-uppercase">

@@ -58,3 +58,70 @@
 .cursor-pointer:hover {
   text-decoration: none; /* สามารถใส่ขีดเส้นใต้เมื่อ hover ถ้าต้องการ */
 }
+
+/* Enhanced styling for welfare forms */
+.hover-underline {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.hover-underline:hover {
+  color: #007bff;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #007bff;
+  transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+  width: 100%;
+}
+
+/* Icon improvements */
+.icon-filled2 {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #007bff, #0056b3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.icon-filled2:hover {
+  background: linear-gradient(145deg, #0056b3, #004494);
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Loading state improvements */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+/* Form item improvements */
+.form-item {
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.form-item:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  border-color: rgba(0, 123, 255, 0.2);
+  transform: translateY(-2px);
+}

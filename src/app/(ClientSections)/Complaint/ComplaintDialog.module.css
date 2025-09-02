@@ -1,0 +1,573 @@
+/* ComplaintDialog.module.css */
+.dialogTitle {
+  font-family: "DOHCOOP", sans-serif;
+  font-size: 28px;
+  text-align: center;
+  background: linear-gradient(135deg, #0061A8 0%, #007bff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin: 0;
+  padding: 8px 0;
+}
+
+.dialogContentText {
+  font-family: "DOHCOOP", sans-serif;
+  text-indent: 0;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  color: #555;
+  background: linear-gradient(135deg, #f8f9ff 0%, #fff8f3 100%);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.dialogContentText::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #0061A8 0%, #fd8332 100%);
+}
+
+.dialogContentText p {
+  margin-bottom: 16px;
+  text-align: justify;
+  text-indent: 30px;
+}
+
+.dialogContentText p:first-child {
+  font-weight: 600;
+  color: #333;
+  font-size: 16px;
+}
+
+.dialogContentText p:last-child {
+  margin-bottom: 0;
+}
+
+.textField {
+  margin: 12px 0;
+  position: relative;
+}
+
+.textField .ant-form-item-label > label {
+  font-family: "DOHCOOP", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.textField .ant-form-item-label > label::before {
+  content: '✨';
+  margin-right: 8px;
+  font-size: 14px;
+  color: #fd8332;
+}
+
+.textField .ant-input,
+.textField .ant-input:focus {
+  border-radius: 12px;
+  border: 2px solid #e8ecf4;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+}
+
+.textField .ant-input:hover {
+  border-color: #b3d9ff;
+  box-shadow: 0 4px 16px rgba(0, 97, 168, 0.1);
+}
+
+.textField .ant-input:focus {
+  border-color: #0061A8;
+  box-shadow: 0 0 0 4px rgba(0, 97, 168, 0.15), 0 4px 20px rgba(0, 97, 168, 0.2);
+  transform: translateY(-1px);
+}
+
+.textField .ant-input::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Floating label effect */
+.textField .ant-form-item-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* Compact info box */
+.compactInfoBox {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #0c4a6e;
+  font-family: "DOHCOOP", sans-serif;
+}
+
+.compactInfoBox .infoIcon {
+  color: #0ea5e9;
+  font-size: 16px;
+  margin-right: 6px;
+}
+
+/* Compact divider */
+.compactDivider {
+  text-align: center;
+  margin: 20px 0 16px 0;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border-radius: 20px;
+  font-size: 13px;
+  color: #6b7280;
+  font-family: "DOHCOOP", sans-serif;
+  font-weight: 500;
+}
+
+/* Optional field styling */
+.optionalField .ant-form-item-label > label::before {
+  content: '📝';
+  color: #6b7280;
+}
+
+.optionalField .ant-form-item-label > label::after {
+  content: ' (ไม่บังคับ)';
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+/* Required field styling */
+.requiredField .ant-form-item-label > label::before {
+  content: '🔥';
+  color: #ef4444;
+}
+
+.requiredField .ant-form-item-label > label::after {
+  content: ' *';
+  color: #ef4444;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+/* Info box for optional fields */
+.optionalInfoBox {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.optionalInfoBox::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.optionalInfoBox .infoIcon {
+  color: #0ea5e9;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.optionalInfoBox .infoText {
+  color: #0c4a6e;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.textFieldInput {
+  font-family: "THSarabun", sans-serif;
+  font-size: 20px;
+}
+
+.textFieldLabel {
+  font-family: "DOHCOOP", sans-serif;
+}
+
+.dialogActions {
+  text-align: center;
+  margin-top: 20px;
+  padding: 16px 0 4px 0;
+  border-top: 1px solid rgba(0, 97, 168, 0.1);
+  position: relative;
+}
+
+.dialogActions::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #0061A8 0%, #fd8332 100%);
+  border-radius: 2px;
+}
+
+.dialogActions .ant-btn {
+  margin: 0 6px;
+}
+
+.submitButton {
+  font-family: "DOHCOOP", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #0061A8 0%, #007bff 100%);
+  border: none;
+  color: white;
+  min-width: 140px;
+  height: 42px;
+  border-radius: 21px;
+  box-shadow: 0 6px 20px rgba(0, 97, 168, 0.35);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s;
+}
+
+.submitButton:hover::before {
+  left: 100%;
+}
+
+.submitButton:hover {
+  background: linear-gradient(135deg, #004c87 0%, #0061A8 100%);
+  box-shadow: 0 12px 35px rgba(0, 97, 168, 0.45);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.submitButton:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.submitButton:disabled {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+  color: #a0aec0;
+  cursor: not-allowed;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: none;
+}
+
+.submitButton .anticon {
+  margin-right: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.cancelButton {
+  font-family: "DOHCOOP", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  min-width: 120px;
+  height: 42px;
+  border: 2px solid #e5e7eb;
+  border-radius: 21px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cancelButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(253, 131, 50, 0.1) 0%, transparent 70%);
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.cancelButton:hover::before {
+  width: 200px;
+  height: 200px;
+}
+
+.cancelButton:hover {
+  background: rgba(248, 250, 252, 0.95);
+  border-color: #fd8332;
+  color: #fd8332;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(253, 131, 50, 0.15);
+}
+
+.cancelButton:active {
+  transform: translateY(0);
+}
+
+/* Additional animations and effects */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.textField {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.textField:nth-child(1) { animation-delay: 0.1s; }
+.textField:nth-child(2) { animation-delay: 0.2s; }
+.textField:nth-child(3) { animation-delay: 0.3s; }
+.textField:nth-child(4) { animation-delay: 0.4s; }
+.textField:nth-child(5) { animation-delay: 0.5s; }
+
+.errorText {
+  color: #ef4444;
+  font-family: "DOHCOOP", sans-serif;
+  font-size: 14px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #ef4444;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Glass morphism effect for the main content */
+.glassCard {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border-radius: 20px;
+  padding: 30px;
+}
+
+/* Alert customization */
+.textField .ant-form-item-explain-error {
+  font-family: "DOHCOOP", sans-serif;
+  font-size: 14px;
+  margin-top: 6px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+  padding: 4px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #ef4444;
+}
+
+/* Success/Error alert styling */
+.ant-alert {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.ant-alert::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.ant-alert-success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.ant-alert-success::before {
+  background: linear-gradient(135deg, #10b981 0%, #22c55e 100%);
+}
+
+.ant-alert-error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(248, 113, 113, 0.05) 100%);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.ant-alert-error::before {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+}
+
+/* Loading state styling */
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 16px;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .dialogTitle {
+    font-size: 22px;
+    padding: 6px 0;
+  }
+  
+  .dialogContentText {
+    padding: 20px 16px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dialogContentText p {
+    text-indent: 20px;
+    font-size: 14px;
+  }
+  
+  .textField .ant-input {
+    font-size: 16px;
+    height: 44px;
+    padding: 12px 16px;
+  }
+  
+  .textField .ant-form-item-label > label {
+    font-size: 15px;
+  }
+  
+  .submitButton,
+  .cancelButton {
+    font-size: 16px;
+    min-width: 140px;
+    height: 48px;
+    border-radius: 24px;
+  }
+  
+  .dialogActions .ant-btn {
+    margin: 8px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dialogTitle {
+    font-size: 20px;
+    padding: 4px 0;
+  }
+  
+  .dialogContentText {
+    padding: 16px 12px;
+    margin-bottom: 1rem;
+  }
+  
+  .dialogContentText p {
+    text-indent: 15px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  
+  .textField {
+    margin: 16px 0;
+  }
+  
+  .textField .ant-input {
+    font-size: 16px;
+    height: 42px;
+    padding: 10px 14px;
+  }
+  
+  .textField .ant-form-item-label > label {
+    font-size: 14px;
+  }
+  
+  .submitButton,
+  .cancelButton {
+    font-size: 14px;
+    min-width: 120px;
+    height: 44px;
+    border-radius: 22px;
+  }
+  
+  .dialogActions {
+    margin-top: 24px;
+    padding: 20px 0 4px 0;
+  }
+  
+  .dialogActions .ant-btn {
+    margin: 6px 4px;
+    display: block;
+    width: calc(100% - 16px);
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 12px;
+  }
+  
+  .dialogActions .ant-btn:last-child {
+    margin-bottom: 0;
+  }
+}

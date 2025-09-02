@@ -1,20 +1,14 @@
 
-import React, { useContext } from "react";
+import React, { memo } from "react";
 import styles from "./HomeApp.module.css";
-import Link from "next/link";
-import { Button, ConfigProvider, Space } from "antd";
+import { Button, ConfigProvider } from "antd";
 import { AntDesignOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
-import { useRouter } from "next/navigation";
+import useNavigation from "@/hooks/useNavigation";
 
-const HomeApplication = () => {
-  const router = useRouter();
-  const { getPrefixCls } = useContext(ConfigProvider.ConfigContext);
-  const rootPrefixCls = getPrefixCls();
-  const linearGradientButton = css`
-  &.${rootPrefixCls}-btn-primary:not([disabled]):not(
-      .${rootPrefixCls}-btn-dangerous
-    ) {
+// Move CSS outside component to prevent re-creation on every render
+const linearGradientButton = css`
+  &.ant-btn-primary:not([disabled]):not(.ant-btn-dangerous) {
     border-width: 0;
 
     > span {
@@ -37,9 +31,13 @@ const HomeApplication = () => {
     }
   }
 `;
+
+const HomeApplication = memo(() => {
+  const { navigateWithMenu } = useNavigation();
+  
+  // Use direct function call without useCallback to avoid dependency issues
   const handleViewAllClick = () => {
-    localStorage.setItem("menuName", "ดาวน์โหลดแอปพลิเคชั่น");
-    router.push("/DownloadApp");
+    navigateWithMenu("/DownloadApp", "ดาวน์โหลดแอปพลิเคชั่น");
   };
 
   return (
@@ -47,7 +45,7 @@ const HomeApplication = () => {
       <div className={styles.inputGroup}>
         <div className="col-lg-8">
           <h3 className={styles.centeredText}>
-            Download Application "Doh Saving" กันเถอะ
+            Download Application &ldquo;Doh Saving&rdquo; กันเถอะ
           </h3>
         </div>
         <div className={` ${styles.centeredText}`}>
@@ -76,6 +74,8 @@ const HomeApplication = () => {
       </div>
     </div>
   );
-};
+});
+
+HomeApplication.displayName = 'HomeApplication';
 
 export default HomeApplication;
